@@ -7,6 +7,7 @@ import requests.exceptions
 
 from graphitepager.config import get_config
 from graphitepager.description import get_descriptions
+from graphitepager.description import missing_target_descriptions
 from graphitepager.graphite_data_record import GraphiteDataRecord
 from graphitepager.graphite_target import get_records
 from graphitepager.level import Level
@@ -17,6 +18,7 @@ from notifiers.notifier_proxy import NotifierProxy
 from notifiers.hipchat_notifier import HipChatNotifier
 from notifiers.pagerduty_notifier import PagerdutyNotifier
 from notifiers.pushbullet_notifier import PushBulletNotifier
+from notifiers.stdout_notifier import StdoutNotifier
 
 
 def update_notifiers(notifier_proxy, alert, record, graphite_url):
@@ -31,8 +33,6 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
         alert_level,
         value
     )
-    if alert_level != Level.NOMINAL:
-        print description
 
     notifier_proxy.notify(
         alert,
@@ -50,7 +50,8 @@ def create_notifier_proxy(config):
     klasses = [
         HipChatNotifier,
         PagerdutyNotifier,
-        PushBulletNotifier
+        PushBulletNotifier,
+        StdoutNotifier,
     ]
 
     notifier_proxy = NotifierProxy()
@@ -89,14 +90,20 @@ def run(args):
                     from_=alert.get('from'),
                 )
             except requests.exceptions.RequestException:
-                notification = 'Could not get target: {}'.format(target)
-                print notification
+                description, html_description = missing_target_descriptions(
+                    graphite_url,
+                    alert,
+                    target,
+                    Level.NO_DATA,
+                    None
+                )
+
                 notifier_proxy.notify(
                     alert,
                     target,
-                    Level.CRITICAL,
-                    notification,
-                    notification
+                    Level.NO_DATA,
+                    description,
+                    html_description
                 )
                 records = []
 

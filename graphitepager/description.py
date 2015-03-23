@@ -3,6 +3,20 @@ from urllib import urlencode
 
 from graphitepager.level import Level
 
+ALERT_MISSING_TEMPLATE = r"""{{level}} alert for
+"{{alert.get('name')}}". Go to {{graph_url}}.
+{% if docs_url %}Documentation: {{docs_url}}{% endif %}.
+"""
+
+HTML_ALERT_MISSING_TEMPLATE = r"""{{level}} alert for
+"{{alert.get('name')}}".
+Go to <a href="{{graph_url}}">the graph</a>.
+{% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
+"""
+
+STDOUT_MISSING_TEMPLATE = r"""{{level}} alert for
+"{{alert.get('name')}}". Go to {{graph_url}}.
+"""
 
 ALERT_TEMPLATE = r"""{{level}} alert for
 {{alert.get('name')}} {{record.target}}. The current value is
@@ -17,6 +31,12 @@ HTML_ALERT_TEMPLATE = r"""{{level}} alert for
 value of {{threshold_value}}.
 Go to <a href="{{graph_url}}">the graph</a>.
 {% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
+"""
+
+STDOUT_TEMPLATE = r"""{{level}} alert for
+{{alert.get('name')}} {{record.target}}. The current value is
+{{current_value}} which passes the {{threshold_level|lower}}
+value of {{threshold_value}}.
 """
 
 
@@ -40,6 +60,20 @@ class Description(object):
             self.value,
         )
 
+    def stdout(self):
+        template = STDOUT_TEMPLATE
+        if self.level == Level.NO_DATA:
+            template = STDOUT_MISSING_TEMPLATE
+
+        return self.description_for_alert(
+            template,
+            self.graphite_url,
+            self.alert,
+            self.record,
+            self.level,
+            self.value,
+        )
+
     def description_for_alert(self,
                               template,
                               graphite_url,
@@ -49,7 +83,11 @@ class Description(object):
                               current_value):
         context = dict(locals())
         context['graphite_url'] = graphite_url
-        context['docs_url'] = alert.documentation_url(record.target)
+        if type(record) == str:
+            context['docs_url'] = alert.documentation_url()
+        else:
+            context['docs_url'] = alert.documentation_url(record.target)
+
         url_params = (
             ('width', 586),
             ('height', 308),
@@ -72,9 +110,9 @@ class Description(object):
         return Template(template).render(context)
 
 
-def get_descriptions(graphite_url, alert, record, alert_level, value):
+def _get_descriptions(graphite_url, alert, record, alert_level, value, alert_template, html_alert_template):
     description = Description(
-        ALERT_TEMPLATE,
+        alert_template,
         graphite_url,
         alert,
         record,
@@ -82,7 +120,7 @@ def get_descriptions(graphite_url, alert, record, alert_level, value):
         value
     )
     html_description = Description(
-        HTML_ALERT_TEMPLATE,
+        html_alert_template,
         graphite_url,
         alert,
         record,
@@ -91,3 +129,11 @@ def get_descriptions(graphite_url, alert, record, alert_level, value):
     )
 
     return description, html_description
+
+
+def get_descriptions(graphite_url, alert, record, alert_level, value):
+    return _get_descriptions(graphite_url, alert, record, alert_level, value, ALERT_TEMPLATE, HTML_ALERT_TEMPLATE)
+
+
+def missing_target_descriptions(graphite_url, alert, record, alert_level, value):
+    return _get_descriptions(graphite_url, alert, record, alert_level, value, ALERT_MISSING_TEMPLATE, HTML_ALERT_MISSING_TEMPLATE)
