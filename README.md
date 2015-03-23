@@ -24,6 +24,7 @@ notification alerts if a metric reaches a warning or critical level.
 
 * Graphite
 * Redis
+* libmagic
 
 ## Notifiers
 
