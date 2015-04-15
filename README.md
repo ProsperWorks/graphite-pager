@@ -35,6 +35,8 @@ PagerDuty requires an application key set in the environment as `PAGERDUTY_KEY`
 
 HipChat requires an application key `HIPCHAT_KEY` and the room to notify `HIPCHAT_ROOM`
 
+Slack requires an slack `SLACK_URL`.
+
 PushBullet requires an application key `PUSHBULLET_KEY` and optionally
 comma separated list of devices in `PUSHBULLET_DEVICES` and/or comma
 separated list of contacts in `PUSHBULLET_CONTACTS`.

@@ -18,6 +18,7 @@ from notifiers.notifier_proxy import NotifierProxy
 from notifiers.hipchat_notifier import HipChatNotifier
 from notifiers.pagerduty_notifier import PagerdutyNotifier
 from notifiers.pushbullet_notifier import PushBulletNotifier
+from notifiers.slack_notifier import SlackNotifier
 from notifiers.stdout_notifier import StdoutNotifier
 
 
@@ -52,6 +53,7 @@ def create_notifier_proxy(config):
         PagerdutyNotifier,
         PushBulletNotifier,
         StdoutNotifier,
+        SlackNotifier,
     ]
 
     notifier_proxy = NotifierProxy()
