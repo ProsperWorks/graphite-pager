@@ -44,6 +44,25 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
     )
 
 
+def update_notifiers_missing(notifier_proxy, alert, config):
+    graphite_url = config.get('GRAPHITE_URL')
+    description, html_description = missing_target_descriptions(
+        graphite_url,
+        alert,
+        alert.get('target'),
+        Level.NO_DATA,
+        None
+    )
+
+    notifier_proxy.notify(
+        alert,
+        alert.get('target'),
+        Level.NO_DATA,
+        description,
+        html_description
+    )
+
+
 def create_notifier_proxy(config):
     redis_url = config.get('REDISTOGO_URL', config.get('REDIS_URL', None))
     STORAGE = RedisStorage(redis, redis_url)
@@ -92,21 +111,7 @@ def run(args):
                     from_=alert.get('from'),
                 )
             except requests.exceptions.RequestException:
-                description, html_description = missing_target_descriptions(
-                    graphite_url,
-                    alert,
-                    target,
-                    Level.NO_DATA,
-                    None
-                )
-
-                notifier_proxy.notify(
-                    alert,
-                    target,
-                    Level.NO_DATA,
-                    description,
-                    html_description
-                )
+                update_notifiers_missing(notifier_proxy, alert, config)
                 records = []
 
             for record in records:
