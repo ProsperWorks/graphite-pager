@@ -110,7 +110,13 @@ class Description(object):
         return Template(template).render(context)
 
 
-def _get_descriptions(graphite_url, alert, record, alert_level, value, alert_template, html_alert_template):
+def _get_descriptions(graphite_url,
+                      alert,
+                      record,
+                      alert_level,
+                      value,
+                      alert_template,
+                      html_alert_template):
     description = Description(
         alert_template,
         graphite_url,
@@ -131,9 +137,29 @@ def _get_descriptions(graphite_url, alert, record, alert_level, value, alert_tem
     return description, html_description
 
 
-def get_descriptions(graphite_url, alert, record, alert_level, value):
-    return _get_descriptions(graphite_url, alert, record, alert_level, value, ALERT_TEMPLATE, HTML_ALERT_TEMPLATE)
+def get_descriptions(graphite_url,
+                     alert,
+                     record,
+                     alert_level,
+                     value):
+    return _get_descriptions(graphite_url,
+                             alert,
+                             record,
+                             alert_level,
+                             value,
+                             ALERT_TEMPLATE,
+                             HTML_ALERT_TEMPLATE)
 
 
-def missing_target_descriptions(graphite_url, alert, record, alert_level, value):
-    return _get_descriptions(graphite_url, alert, record, alert_level, value, ALERT_MISSING_TEMPLATE, HTML_ALERT_MISSING_TEMPLATE)
+def missing_target_descriptions(graphite_url,
+                                alert,
+                                record,
+                                alert_level,
+                                value):
+    return _get_descriptions(graphite_url,
+                             alert,
+                             record,
+                             alert_level,
+                             value,
+                             ALERT_MISSING_TEMPLATE,
+                             HTML_ALERT_MISSING_TEMPLATE)

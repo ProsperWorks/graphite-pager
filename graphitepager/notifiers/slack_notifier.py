@@ -38,14 +38,18 @@ class SlackNotifier(BaseNotifier):
         )
 
     # #800080 == purple
-    def _message_room(self, message, color='#800080', level=None, icon_emoji=None):
+    def _message_room(self,
+                      message,
+                      color='#800080',
+                      level=None,
+                      icon_emoji=None):
         args = {
-            'text': 'alert!',
+            'text': 'graphite-pager alert',
             'attachments': [{
                 'color': color,
                 'fields': [{
                     'title': level,
-                    'value': message,
+                    'value': message.replace("\n", ' '),
                     'short': False,
                 }]
             }]
