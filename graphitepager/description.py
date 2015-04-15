@@ -4,18 +4,18 @@ from urllib import urlencode
 from graphitepager.level import Level
 
 ALERT_MISSING_TEMPLATE = r"""{{level}} alert for
-"{{alert.get('name')}}". Go to {{graph_url}}.
+{{alert.get('name')}} {{record.target}}. Go to {{graph_url}}.
 {% if docs_url %}Documentation: {{docs_url}}{% endif %}.
 """
 
 HTML_ALERT_MISSING_TEMPLATE = r"""{{level}} alert for
-"{{alert.get('name')}}".
+{{alert.get('name')}} {{record.target}}.
 Go to <a href="{{graph_url}}">the graph</a>.
 {% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
 """
 
 STDOUT_MISSING_TEMPLATE = r"""{{level}} alert for
-"{{alert.get('name')}}". Go to {{graph_url}}.
+{{alert.get('name')}} {{record.target}}. Go to {{graph_url}}.
 """
 
 ALERT_TEMPLATE = r"""{{level}} alert for
