@@ -8,7 +8,7 @@ class BaseNotifier(object):
         self._storage = storage
         self._domain = self.__class__.__name__.replace('Notifier', '')
 
-    def notify(self, alert, alert_key, level, description, html_description):
+    def notify(self, alert, alert_key, level, description):
         notified = self._storage.is_locked_for_domain_and_key(
             self._domain,
             alert_key
@@ -19,7 +19,6 @@ class BaseNotifier(object):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=True
             )
             self._storage.remove_lock_for_domain_and_key(
@@ -31,7 +30,6 @@ class BaseNotifier(object):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=False
             )
             self._storage.set_lock_for_domain_and_key(
@@ -43,6 +41,5 @@ class BaseNotifier(object):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=None):
         pass

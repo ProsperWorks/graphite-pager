@@ -21,7 +21,6 @@ class SlackNotifier(BaseNotifier):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=None):
         colors = {
             Level.NOMINAL: '00FF00',  # green
@@ -30,7 +29,7 @@ class SlackNotifier(BaseNotifier):
         }
         color = colors.get(level, '#FF0000')  # red
 
-        description = str(html_description)
+        description = str(description.slack())
         self._message_room(
             message=description,
             color=color,

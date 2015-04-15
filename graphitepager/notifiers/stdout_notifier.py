@@ -13,7 +13,6 @@ class StdoutNotifier(BaseNotifier):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=None):
 
         print '[{0}] {1}'.format(

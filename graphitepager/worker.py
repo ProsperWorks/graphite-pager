@@ -6,8 +6,8 @@ import requests
 import requests.exceptions
 
 from graphitepager.config import get_config
-from graphitepager.description import get_descriptions
-from graphitepager.description import missing_target_descriptions
+from graphitepager.description import get_description
+from graphitepager.description import missing_target_description
 from graphitepager.graphite_data_record import GraphiteDataRecord
 from graphitepager.graphite_target import get_records
 from graphitepager.level import Level
@@ -27,7 +27,7 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
 
     alert_level, value = alert.check_record(record)
 
-    description, html_description = get_descriptions(
+    description = get_description(
         graphite_url,
         alert,
         record,
@@ -39,14 +39,13 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
         alert,
         alert_key,
         alert_level,
-        description,
-        html_description
+        description
     )
 
 
 def update_notifiers_missing(notifier_proxy, alert, config):
     graphite_url = config.get('GRAPHITE_URL')
-    description, html_description = missing_target_descriptions(
+    description = missing_target_description(
         graphite_url,
         alert,
         alert.get('target'),
@@ -58,8 +57,7 @@ def update_notifiers_missing(notifier_proxy, alert, config):
         alert,
         alert.get('target'),
         Level.NO_DATA,
-        description,
-        html_description
+        description
     )
 
 

@@ -29,7 +29,7 @@ class PagerdutyNotifier(BaseNotifier):
                 ),
             }
 
-    def notify(self, alert, alert_key, level, description, html_description):
+    def notify(self, alert, alert_key, level, description):
         service_key = self._client.service_key
         self._client.service_key = self._get_service_key(alert, level)
 

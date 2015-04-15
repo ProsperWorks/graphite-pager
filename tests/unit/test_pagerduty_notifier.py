@@ -4,6 +4,7 @@ from unittest import TestCase
 from mock import MagicMock
 from pagerduty import PagerDuty
 
+from graphitepager.description import Description
 from graphitepager.notifiers.pagerduty_notifier import PagerdutyNotifier
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.alerts import Alert
@@ -15,8 +16,7 @@ class TestPagerduteryNotifier(TestCase):
 
     def setUp(self):
         self.alert_key = 'ALERT KEY'
-        self.description = 'ALERT DESCRIPTION'
-        self.html_description = 'HTML ALERT DESCRIPTION'
+        self.description = MagicMock(Description)
         self.mock_config = MagicMock(Config)
         self.mock_redis_storage = MagicMock(RedisStorage)
         self.mock_pagerduty_client = MagicMock(PagerDuty)
@@ -35,13 +35,12 @@ class TestPagerduteryNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_redis_storage.get_incident_key_for_alert_key.\
             assert_called_once_with(self.alert_key)
         self.mock_pagerduty_client.trigger.assert_called_once_with(
-            incident_key=incident_key, description=self.description)
+            incident_key=incident_key, description=str(self.description))
         self.mock_redis_storage.set_incident_key_for_alert_key.\
             assert_called_once_with(
                 self.alert_key,
@@ -55,13 +54,12 @@ class TestPagerduteryNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_redis_storage.get_incident_key_for_alert_key.\
             assert_called_once_with(self.alert_key)
         self.mock_pagerduty_client.trigger.assert_called_once_with(
-            incident_key=None, description=self.description)
+            incident_key=None, description=str(self.description))
         self.mock_redis_storage.set_incident_key_for_alert_key.\
             assert_called_once_with(
                 self.alert_key,
@@ -75,8 +73,7 @@ class TestPagerduteryNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.NOMINAL,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_redis_storage.get_incident_key_for_alert_key.\
             assert_called_once_with(self.alert_key)
@@ -91,8 +88,7 @@ class TestPagerduteryNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.NOMINAL,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_redis_storage.get_incident_key_for_alert_key.\
             assert_called_once_with(self.alert_key)

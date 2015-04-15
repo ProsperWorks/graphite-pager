@@ -4,6 +4,7 @@ from mock import MagicMock
 from pushbullet import PushBullet
 
 
+from graphitepager.description import Description
 from graphitepager.notifiers.pushbullet_notifier import PushBulletNotifier
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.alerts import Alert
@@ -15,10 +16,9 @@ class TestPushBulletNotifier(TestCase):
 
     def setUp(self):
         self.alert_key = 'ALERT KEY'
-        self.description = MagicMock()
+        self.description = MagicMock(Description)
         self.description.__str__.return_value = 'ALERT DESCRIPTION'
         self.description.graphite_url = 'GRAPGITE URL'
-        self.html_description = 'HTML ALERT DESCRIPTION'
         self.mock_redis_storage = MagicMock(RedisStorage)
         self.mock_pushbullet_client = MagicMock(PushBullet)
         self.mock_pushbullet_client.devices = [
@@ -85,8 +85,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.assertEqual(self.mock_pushbullet_client.mock_calls, [])
 
@@ -100,8 +99,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.NOMINAL,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_redis_storage.is_locked_for_domain_and_key.\
             assert_called_once_with('PushBullet', self.alert_key)
@@ -123,8 +121,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_pushbullet_client.push_link.assert_called_once_with(
             "[%s]: %s" % (Level.WARNING, "name"),
@@ -145,8 +142,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.CRITICAL,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_pushbullet_client.push_link.assert_called_once_with(
             "[%s]: %s" % (Level.CRITICAL, "name"),
@@ -167,8 +163,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.NO_DATA,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_pushbullet_client.push_link.assert_called_once_with(
             "[%s]: %s" % (Level.NO_DATA, "name"),
@@ -189,8 +184,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         devices = self.mock_pushbullet_client.devices
         devices[0].push_link.assert_called_once_with(
@@ -214,8 +208,7 @@ class TestPushBulletNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         contacts = self.mock_pushbullet_client.contacts
         contacts[0].push_link.assert_called_once_with(

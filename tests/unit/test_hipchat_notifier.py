@@ -4,6 +4,7 @@ from mock import MagicMock
 from hipchat import HipChat
 
 
+from graphitepager.description import Description
 from graphitepager.notifiers.hipchat_notifier import HipChatNotifier
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.alerts import Alert
@@ -15,8 +16,7 @@ class TestHipChatNotifier(TestCase):
 
     def setUp(self):
         self.alert_key = 'ALERT KEY'
-        self.description = 'ALERT DESCRIPTION'
-        self.html_description = 'HTML ALERT DESCRIPTION'
+        self.description = MagicMock(Description)
         self.mock_config = MagicMock(Config)
         self.mock_redis_storage = MagicMock(RedisStorage)
         self.mock_hipchat_client = MagicMock(HipChat)
@@ -39,8 +39,7 @@ class TestHipChatNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.assertEqual(self.mock_hipchat_client.message_room.mock_calls, [])
 
@@ -52,8 +51,7 @@ class TestHipChatNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.assertEqual(self.mock_hipchat_client.mock_calls, [])
 
@@ -67,15 +65,14 @@ class TestHipChatNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.NOMINAL,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_redis_storage.is_locked_for_domain_and_key.\
             assert_called_once_with('HipChat', self.alert_key)
         self.mock_hipchat_client.message_room.assert_called_once_with(
             room_name,
             'Graphite-Pager',
-            self.html_description,
+            self.description.html(),
             message_format='html',
             color='green',
         )
@@ -92,13 +89,12 @@ class TestHipChatNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.WARNING,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_hipchat_client.message_room.assert_called_once_with(
             room_name,
             'Graphite-Pager',
-            self.html_description,
+            self.description.html(),
             message_format='html',
             color='yellow'
         )
@@ -115,13 +111,12 @@ class TestHipChatNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.CRITICAL,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_hipchat_client.message_room.assert_called_once_with(
             room_name,
             'Graphite-Pager',
-            self.html_description,
+            self.description.html(),
             message_format='html',
             color='red'
         )
@@ -138,13 +133,12 @@ class TestHipChatNotifier(TestCase):
             self.mock_alert,
             self.alert_key,
             Level.NO_DATA,
-            self.description,
-            self.html_description)
+            self.description)
 
         self.mock_hipchat_client.message_room.assert_called_once_with(
             room_name,
             'Graphite-Pager',
-            self.html_description,
+            self.description.html(),
             message_format='html',
             color='red'
         )

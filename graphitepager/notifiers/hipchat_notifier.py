@@ -20,7 +20,6 @@ class HipChatNotifier(BaseNotifier):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=None):
         colors = {
             Level.NOMINAL: 'green',
@@ -29,7 +28,7 @@ class HipChatNotifier(BaseNotifier):
         }
         color = colors.get(level, 'red')
 
-        description = str(html_description)
+        description = description.html()
         self._notify_room_with_args(
             'Graphite-Pager',
             description,

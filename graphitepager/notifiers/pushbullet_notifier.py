@@ -28,7 +28,6 @@ class PushBulletNotifier(BaseNotifier):
                 alert,
                 level,
                 description,
-                html_description,
                 nominal=None):
 
         self._notify_clients_with_args(

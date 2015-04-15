@@ -14,6 +14,12 @@ Go to <a href="{{graph_url}}">the graph</a>.
 {% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
 """
 
+SLACK_ALERT_MISSING_TEMPLATE = r"""{{level}} alert for
+{{alert.get('name')}} {{record.target}}.
+Go to the <{{graph_url}}|graph>.
+{% if docs_url %}<{{docs_url}}|Documentation>{% endif %}.
+"""
+
 STDOUT_MISSING_TEMPLATE = r"""{{level}} alert for
 {{alert.get('name')}} {{record.target}}. Go to {{graph_url}}.
 """
@@ -31,6 +37,14 @@ HTML_ALERT_TEMPLATE = r"""{{level}} alert for
 value of {{threshold_value}}.
 Go to <a href="{{graph_url}}">the graph</a>.
 {% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
+"""
+
+SLACK_ALERT_TEMPLATE = r"""{{level}} alert for
+{{alert.get('name')}} {{record.target}}. The current value is
+{{current_value}} which passes the {{threshold_level|lower}}
+value of {{threshold_value}}.
+Go to the <{{graph_url}}|graph>.
+{% if docs_url %}<{{docs_url}}|Documentation>{% endif %}.
 """
 
 STDOUT_TEMPLATE = r"""{{level}} alert for
@@ -65,6 +79,32 @@ class Description(object):
         if self.level == Level.NO_DATA:
             template = STDOUT_MISSING_TEMPLATE
 
+        return self.description_for_alert(
+            template,
+            self.graphite_url,
+            self.alert,
+            self.record,
+            self.level,
+            self.value,
+        )
+
+    def html(self):
+        template = HTML_ALERT_TEMPLATE
+        if self.level == Level.NO_DATA:
+            template = HTML_ALERT_MISSING_TEMPLATE
+        return self.description_for_alert(
+            template,
+            self.graphite_url,
+            self.alert,
+            self.record,
+            self.level,
+            self.value,
+        )
+
+    def slack(self):
+        template = SLACK_ALERT_TEMPLATE
+        if self.level == Level.NO_DATA:
+            template = SLACK_ALERT_MISSING_TEMPLATE
         return self.description_for_alert(
             template,
             self.graphite_url,
@@ -110,14 +150,13 @@ class Description(object):
         return Template(template).render(context)
 
 
-def _get_descriptions(graphite_url,
-                      alert,
-                      record,
-                      alert_level,
-                      value,
-                      alert_template,
-                      html_alert_template):
-    description = Description(
+def _get_description(graphite_url,
+                     alert,
+                     record,
+                     alert_level,
+                     value,
+                     alert_template):
+    return Description(
         alert_template,
         graphite_url,
         alert,
@@ -125,41 +164,29 @@ def _get_descriptions(graphite_url,
         alert_level,
         value
     )
-    html_description = Description(
-        html_alert_template,
-        graphite_url,
-        alert,
-        record,
-        alert_level,
-        value
-    )
-
-    return description, html_description
 
 
-def get_descriptions(graphite_url,
-                     alert,
-                     record,
-                     alert_level,
-                     value):
-    return _get_descriptions(graphite_url,
-                             alert,
-                             record,
-                             alert_level,
-                             value,
-                             ALERT_TEMPLATE,
-                             HTML_ALERT_TEMPLATE)
+def get_description(graphite_url,
+                    alert,
+                    record,
+                    alert_level,
+                    value):
+    return _get_description(graphite_url,
+                            alert,
+                            record,
+                            alert_level,
+                            value,
+                            ALERT_TEMPLATE)
 
 
-def missing_target_descriptions(graphite_url,
-                                alert,
-                                record,
-                                alert_level,
-                                value):
-    return _get_descriptions(graphite_url,
-                             alert,
-                             record,
-                             alert_level,
-                             value,
-                             ALERT_MISSING_TEMPLATE,
-                             HTML_ALERT_MISSING_TEMPLATE)
+def missing_target_description(graphite_url,
+                               alert,
+                               record,
+                               alert_level,
+                               value):
+    return _get_description(graphite_url,
+                            alert,
+                            record,
+                            alert_level,
+                            value,
+                            ALERT_MISSING_TEMPLATE)
