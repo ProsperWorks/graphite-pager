@@ -113,7 +113,6 @@ def run(args):
                 name = alert.get('name')
                 target = record.target
                 if (name, target) not in seen_alert_targets:
-                    # print 'Checking', (name, target)
                     update_notifiers(
                         notifier_proxy,
                         alert,
@@ -121,8 +120,6 @@ def run(args):
                         graphite_url
                     )
                     seen_alert_targets.add((name, target))
-                # else:
-                #     print 'Seen', (name, target)
         time_diff = time.time() - start_time
         sleep_for = 60 - time_diff
         if sleep_for > 0:
