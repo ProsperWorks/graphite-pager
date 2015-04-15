@@ -132,10 +132,12 @@ def run(args):
 
 
 def main():
+    command_map = {
+        'verify': verify,
+        'run': run,
+    }
     args = parse_args()
-    if args.command == 'verify':
-        return verify(args)
-    return run(args)
+    return command_map[args.command](args)
 
 
 if __name__ == '__main__':
