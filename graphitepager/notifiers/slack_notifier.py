@@ -16,6 +16,21 @@ class SlackNotifier(BaseNotifier):
         self.enabled = config.has_keys(required)
         if self.enabled:
             self._slack_url = config.get('SLACK_URL')
+            self._slack_config = config.get('slack', {})
+            self._slack_urls = {
+                Level.NOMINAL: self._slack_config.get(
+                    'nominal', self._slack_url
+                ),
+                Level.WARNING: self._slack_config.get(
+                    'warning', self._slack_url
+                ),
+                Level.CRITICAL: self._slack_config.get(
+                    'critical', self._slack_url
+                ),
+                Level.NO_DATA: self._slack_config.get(
+                    'no_data', self._slack_url
+                ),
+            }
 
     def _notify(self,
                 alert,
@@ -31,6 +46,7 @@ class SlackNotifier(BaseNotifier):
 
         description = str(description.slack())
         self._message_room(
+            alert=alert,
             message=description,
             color=color,
             level=level,
@@ -38,6 +54,7 @@ class SlackNotifier(BaseNotifier):
 
     # #800080 == purple
     def _message_room(self,
+                      alert,
                       message,
                       color='#800080',
                       level=None,
@@ -61,7 +78,7 @@ class SlackNotifier(BaseNotifier):
         encoded_args = urllib.urlencode(values)
 
         try:
-            url = self._slack_url
+            url = self._get_service_url(alert, level)
             response = urllib2.urlopen(url, encoded_args).read()
         except urllib2.HTTPError as e:
             print '--> Unable to send message to slack: "{0}"'.format(
@@ -76,3 +93,7 @@ class SlackNotifier(BaseNotifier):
             message
         )
         return False
+
+    def _get_service_url(self, alert, level):
+        slack_url = self._slack_urls.get(level, self._slack_url)
+        return alert.get('slack_url', slack_url)
