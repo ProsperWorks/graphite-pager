@@ -99,6 +99,7 @@ def run(args):
         start_time = time.time()
         seen_alert_targets = set()
         for alert in alerts:
+            print 'for alert'
             target = alert.get('target')
             try:
                 records = get_records(
@@ -108,11 +109,14 @@ def run(args):
                     target,
                     from_=alert.get('from'),
                 )
+                print '  got records'
             except requests.exceptions.RequestException:
+                print '  excepted'
                 update_notifiers_missing(notifier_proxy, alert, config)
                 records = []
 
             for record in records:
+                print '  for record excepted'
                 name = alert.get('name')
                 target = record.target
                 if (name, target) not in seen_alert_targets:
