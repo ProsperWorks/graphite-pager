@@ -5,6 +5,9 @@ import redis
 import requests
 import requests.exceptions
 
+from requests.auth import HTTPBasicAuth
+from requests.auth import HTTPDigestAuth
+
 from graphitepager.config import get_config
 from graphitepager.description import get_description
 from graphitepager.description import missing_target_description
