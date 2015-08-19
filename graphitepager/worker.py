@@ -91,15 +91,19 @@ def verify(args):
 
 
 def run(args):
+    verbose = args.verbose
+    if verbose: print 'args %s' % args
     config = get_config(args.config)
     alerts = config.alerts()
+    if verbose: print 'config %s' % config
+    if verbose: print 'alerts %s' % alerts
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
     while True:
         start_time = time.time()
         seen_alert_targets = set()
         for alert in alerts:
-            print 'for alert'
+            if verbose: print 'for alert %s' % alert
             target = alert.get('target')
             try:
                 records = get_records(
@@ -109,14 +113,14 @@ def run(args):
                     target,
                     from_=alert.get('from'),
                 )
-                print '  got records'
-            except requests.exceptions.RequestException:
-                print '  excepted'
+                if verbose: print '  got records %s' % records
+            except requests.exceptions.RequestException as ex:
+                if verbose: print '  excepted %s' % ex
                 update_notifiers_missing(notifier_proxy, alert, config)
                 records = []
 
             for record in records:
-                print '  for record excepted'
+                if verbose: print '  for record %s' % record
                 name = alert.get('name')
                 target = record.target
                 if (name, target) not in seen_alert_targets:

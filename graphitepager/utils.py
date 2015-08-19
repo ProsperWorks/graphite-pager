@@ -17,6 +17,12 @@ def parse_args():
         default='alerts.yml',
         help='path to the config file'
     )
+    parser.add_argument(
+        '-v',
+        '--verbose',
+        action='store_true',
+        help='verbose output'
+    )
 
     args = parser.parse_args()
     return args
