@@ -115,8 +115,8 @@ def run(args):
                     graphite_url,
                     lambda url: requests.get(url,
                                              verify=True,
-                                             auth=HTTPDigestAuth(graphite_user,
-                                                                 graphite_pass)
+                                             auth=HTTPBasicAuth(graphite_user,
+                                                                graphite_pass)
                                              ),
                     GraphiteDataRecord,
                     target,
