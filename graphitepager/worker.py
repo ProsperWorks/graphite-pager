@@ -99,6 +99,8 @@ def run(args):
     if verbose: print 'alerts %s' % alerts
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
+    graphite_user = config.get('GRAPHITE_USER')
+    graphite_pass = config.get('GRAPHITE_PASS')
     while True:
         start_time = time.time()
         seen_alert_targets = set()
@@ -108,7 +110,11 @@ def run(args):
             try:
                 records = get_records(
                     graphite_url,
-                    requests.get,
+                    lambda url: requests.get(url,
+                                             verify=True,
+                                             auth=HTTPDigestAuth(graphite_user,
+                                                                 graphite_pass)
+                                             ),
                     GraphiteDataRecord,
                     target,
                     from_=alert.get('from'),
