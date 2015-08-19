@@ -5,9 +5,6 @@ import redis
 import requests
 import requests.exceptions
 
-from requests.auth import HTTPBasicAuth
-from requests.auth import HTTPDigestAuth
-
 from graphitepager.config import get_config
 from graphitepager.description import get_description
 from graphitepager.description import missing_target_description
@@ -102,8 +99,6 @@ def run(args):
     if verbose: print 'alerts %s' % alerts
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
-    graphite_user = config.get('GRAPHITE_USER')
-    graphite_pass = config.get('GRAPHITE_PASS')
     while True:
         start_time = time.time()
         seen_alert_targets = set()
@@ -113,11 +108,7 @@ def run(args):
             try:
                 records = get_records(
                     graphite_url,
-                    lambda url: requests.get(url,
-                                             verify=True,
-                                             auth=HTTPBasicAuth(graphite_user,
-                                                                graphite_pass)
-                                             ),
+                    requests.get,
                     GraphiteDataRecord,
                     target,
                     from_=alert.get('from'),
