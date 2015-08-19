@@ -10,12 +10,13 @@ class GraphiteDataRecord(object):
     def __init__(self, metric_string):
         meta, data = metric_string.split('|')
         print 'GraphiteDataRecord(self,%s)' % metric_string
-        print 'meta,data: %s,%s' % (meta,data)
+        print 'meta,data: %s <===> %s' % (meta,data)
         self.target, start_time, end_time, step = meta.rsplit(',', 3)
-        print 't,st,et,s: %s,%s,%s,%s' % (self.target, start_time, end_time, step)
+        print 't,st,et,s: %s <> %s <> %s <> %s' % (self.target, start_time, end_time, step)
         self.start_time = int(start_time)
         self.end_time = int(end_time)
         self.step = int(step)
+        print 'data: %s' % data
         self.values = [_float_or_none(value) for value in data.rsplit(',')]
         print 'values: %s' % self.values
 
