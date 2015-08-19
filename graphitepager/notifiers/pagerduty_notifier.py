@@ -11,7 +11,9 @@ class PagerdutyNotifier(BaseNotifier):
 
         required = ['PAGERDUTY_KEY']
         self.enabled = config.has_keys(required)
+        print 'PagerdutyNotifier.enabled: %s' % self.enabled
         if self.enabled:
+            print 'PAGERDUTY_KEY: %s' % config.get('PAGERDUTY_KEY')
             self._client = pagerduty.PagerDuty(config.get('PAGERDUTY_KEY'))
             self._pagerduty_config = config.get('pagerduty', {})
             self._pagerduty_keys = {
@@ -49,6 +51,9 @@ class PagerdutyNotifier(BaseNotifier):
             self._storage.remove_incident_for_alert_key(alert_key)
 
         self._client.service_key = service_key
+
+        print 'PAGERDUTY NOTIFY'
+
 
     def _get_service_key(self, alert, level):
         service_key = self._pagerduty_keys.get(level, self._client.service_key)

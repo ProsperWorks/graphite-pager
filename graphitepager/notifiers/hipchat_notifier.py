@@ -12,7 +12,9 @@ class HipChatNotifier(BaseNotifier):
 
         required = ['HIPCHAT_KEY', 'HIPCHAT_ROOM']
         self.enabled = config.has_keys(required)
+        print 'HipChatNotifier.enabled: %s' % self.enabled
         if self.enabled:
+            print 'HIPCHAT_KEY: %s' % config.get('HIPCHAT_KEY')
             self._client = hipchat.HipChat(config.get('HIPCHAT_KEY'))
             self.add_room(config.get('HIPCHAT_ROOM'))
 
@@ -35,6 +37,8 @@ class HipChatNotifier(BaseNotifier):
             message_format='html',
             color=color,
         )
+        print 'HIPCHAT NOTIFY: color %s description %s' % (color,description)
+
 
     def _notify_room_with_args(self, *args, **kwargs):
         for room in self._rooms:
