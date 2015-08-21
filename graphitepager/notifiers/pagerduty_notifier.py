@@ -1,4 +1,5 @@
 import pagerduty
+import pygerduty
 
 from graphitepager.level import Level
 from graphitepager.notifiers.base import BaseNotifier
@@ -9,12 +10,17 @@ class PagerdutyNotifier(BaseNotifier):
     def __init__(self, storage, config):
         super(PagerdutyNotifier, self).__init__(storage, config)
 
-        required = ['PAGERDUTY_KEY']
+        required = ['PAGERDUTY_SUBDOMAIN','PAGERDUTY_KEY']
         self.enabled = config.has_keys(required)
         print 'PagerdutyNotifier.enabled: %s' % self.enabled
         if self.enabled:
-            print 'PAGERDUTY_KEY: %s' % config.get('PAGERDUTY_KEY')
-            self._client = pagerduty.PagerDuty(config.get('PAGERDUTY_KEY'))
+            print 'PAGERDUTY_SUBDOMAIN: %s' % config.get('PAGERDUTY_SUBDOMAIN')
+            print 'PAGERDUTY_KEY:       %s' % config.get('PAGERDUTY_KEY')
+            subdomain = config.get('PAGERDUTY_SUBDOMAIN')
+            key       = config.get('PAGERDUTY_KEY')
+            key       = config.get('PAGERDUTY_KEY')
+            self._client = pygerduty.PagerDuty(subdomain,key)
+            self._client.service_key = key
             self._pagerduty_config = config.get('pagerduty', {})
             self._pagerduty_keys = {
                 Level.NOMINAL: self._pagerduty_config.get(
@@ -44,9 +50,10 @@ class PagerdutyNotifier(BaseNotifier):
             print 'alert_key:      %s' % alert_key
             print 'incident_key A: %s' % incident_key
             print 'description:    %s' % description
-            incident_key = self._client.trigger(
-                incident_key=incident_key,
-                description=description
+            incident_key = self._client.trigger_incident(
+                service_key,
+                description,
+                incident_key=incident_key
             )
             print 'incident_key B: %s' % incident_key
             self._storage.set_incident_key_for_alert_key(
@@ -54,7 +61,7 @@ class PagerdutyNotifier(BaseNotifier):
                 incident_key
             )
         elif incident_key is not None:
-            self._client.resolve(incident_key=incident_key)
+            self._client.resolve_incident(service_key,incident_key)
             self._storage.remove_incident_for_alert_key(alert_key)
 
         self._client.service_key = service_key
