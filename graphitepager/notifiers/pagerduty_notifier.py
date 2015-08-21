@@ -39,6 +39,8 @@ class PagerdutyNotifier(BaseNotifier):
         if level != Level.NOMINAL:
             description = str(description)
             print 'TRIGGERING'
+            print 'service_key:    %s' % service_key
+            print 's._c.s_k:       %s' % self._client.service_key
             print 'alert_key:      %s' % alert_key
             print 'incident_key A: %s' % incident_key
             print 'description:    %s' % description
