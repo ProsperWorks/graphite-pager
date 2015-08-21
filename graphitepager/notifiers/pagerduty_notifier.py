@@ -38,10 +38,15 @@ class PagerdutyNotifier(BaseNotifier):
         incident_key = self._storage.get_incident_key_for_alert_key(alert_key)
         if level != Level.NOMINAL:
             description = str(description)
+            print 'TRIGGERING'
+            print 'alert_key:      %s' % alert_key
+            print 'incident_key A: %s' % incident_key
+            print 'description:    %s' % description
             incident_key = self._client.trigger(
                 incident_key=incident_key,
                 description=description
             )
+            print 'incident_key B: %s' % incident_key
             self._storage.set_incident_key_for_alert_key(
                 alert_key,
                 incident_key
