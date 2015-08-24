@@ -24,7 +24,17 @@ class HipChatNotifier(BaseNotifier):
         colors = {
             Level.NOMINAL: 'green',
             Level.WARNING: 'yellow',
-            Level.NO_DATA: 'orange',
+            #
+            # Per
+            # https://www.hipchat.com/docs/api/method/rooms/message,
+            # color choices are "yellow", "red", "green", "purple",
+            # "gray", or "random". (default: yellow)
+            #
+            # I'd prefer orange, but I'm taking purple for NO_DATA
+            # because yellow, red, and green are taken and gray is
+            # gray.
+            #
+            Level.NO_DATA: 'purple',
             Level.CRITICAL: 'red',
         }
         color = colors.get(level, 'red')
