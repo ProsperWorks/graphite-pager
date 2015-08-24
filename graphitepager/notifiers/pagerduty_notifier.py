@@ -34,7 +34,11 @@ class PagerdutyNotifier(BaseNotifier):
         self._client.service_key = self._get_service_key(alert, level)
 
         incident_key = self._storage.get_incident_key_for_alert_key(alert_key)
-        if level != Level.NOMINAL:
+        #
+        # At Prosperworks, we like NO_DATA and WARNING in HipChat, but
+        # CRITICAL only in PagerDuty.
+        #
+        if level == Level.CRITICAL:
             description = str(description)
             incident_key = self._client.trigger(
                 incident_key=incident_key,
