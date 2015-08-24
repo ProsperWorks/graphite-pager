@@ -24,6 +24,7 @@ class HipChatNotifier(BaseNotifier):
         colors = {
             Level.NOMINAL: 'green',
             Level.WARNING: 'yellow',
+            Level.NO_DATA: 'orange',
             Level.CRITICAL: 'red',
         }
         color = colors.get(level, 'red')
