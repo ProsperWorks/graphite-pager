@@ -1,7 +1,7 @@
-Jinja2==2.6
-PyYAML==3.10
+Jinja2==2.8
 pagerduty==0.2.1
-redis==2.6.2
-requests==2.4.1
-python-simple-hipchat==0.1
-pushbullet.py==0.5.0
+pushbullet.py==0.9.0
+python-simple-hipchat==0.4.0
+PyYAML==3.11
+redis==2.10.5
+requests==2.8.1
