@@ -31,7 +31,7 @@ def run_setup():
         description='',
         keywords='',
         test_suite='tests',
-        long_description=open_file('README.md').read(),
+        long_description=open_file('README.rst').read(),
         install_requires=open_file('requirements.txt').readlines(),
         zip_safe=True,
         entry_points="""
