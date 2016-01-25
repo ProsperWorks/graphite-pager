@@ -23,7 +23,7 @@ Using PIP:
 
 From Github::
 
-    pip install git+git://github.com/seatgeek/graphite-pager.git@0.1.1#egg=graphite-pager
+    pip install git+git://github.com/seatgeek/graphite-pager.git@0.1.2#egg=graphite-pager
 
 From PyPI::
 
