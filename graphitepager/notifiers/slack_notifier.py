@@ -41,6 +41,7 @@ class SlackNotifier(BaseNotifier):
             Level.NOMINAL: '00FF00',  # green
             Level.WARNING: 'ffff00',  # yellow
             Level.CRITICAL: '#FF0000',  # red
+            Level.NO_DATA:  '#800080',  # purple
         }
         color = colors.get(level, '#FF0000')  # red
 
