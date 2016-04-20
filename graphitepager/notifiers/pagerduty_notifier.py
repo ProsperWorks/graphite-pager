@@ -35,8 +35,14 @@ class PagerdutyNotifier(BaseNotifier):
 
         incident_key = self._storage.get_incident_key_for_alert_key(alert_key)
         #
-        # At Prosperworks, we like NO_DATA and WARNING in HipChat, but
-        # CRITICAL only in PagerDuty.
+        # At Prosperworks, our monitoring methodology leads us to like
+        # to see all of NOMINAL, NO_DATA, WARNING, and CRITICAL in
+        # chat, but only CRITICAL should trigger PagerDuty.
+        #
+        # We tune CRITICAL specifically so it means, "somebody should
+        # get out of bed at 3 AM to deal with this".  WARNING
+        # thresholds are tuned for "we should do something about this
+        # in the next business hours".
         #
         if level == Level.CRITICAL:
             description = str(description)
