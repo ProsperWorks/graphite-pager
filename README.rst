@@ -76,7 +76,12 @@ Notifiers
 ---------
 
 Notifiers are what communicate with your preferred alerting service. Currently
-Graphite-Pager supports PagerDuty, HipChat and PushBullet notifications.
+Graphite-Pager supports the following notifiers:
+
+* HipChat
+* PagerDuty
+* PushBullet
+* Slack
 
 PagerDuty requires an application key set in the environment as ``PAGERDUTY_KEY``
 
