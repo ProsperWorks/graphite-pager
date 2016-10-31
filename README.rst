@@ -23,11 +23,11 @@ Using PIP:
 
 From Github::
 
-    pip install git+git://github.com/seatgeek/graphitepager.git@0.2.2#egg=graphitepager
+    pip install git+git://github.com/seatgeek/graphitepager.git@0.2.3#egg=graphitepager
 
 From PyPI::
 
-    pip install graphitepager==0.2.2
+    pip install graphitepager==0.2.3
 
 Running
 =======
