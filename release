@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail; [[ $RELEASE_TRACE ]] && set -x
 
-PACKAGE_NAME='graphite-pager'
+PACKAGE_NAME='graphitepager'
 INIT_PACKAGE_NAME='graphitepager'
 PUBLIC="true"
 
