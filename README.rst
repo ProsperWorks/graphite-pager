@@ -27,7 +27,7 @@ From Github::
 
 From PyPI::
 
-    pip install graphite-pager==0.0.10
+    pip install graphite-pager==0.2.0
 
 Running
 =======
