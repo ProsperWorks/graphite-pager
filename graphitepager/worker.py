@@ -5,6 +5,7 @@ import redis
 import requests
 import requests.exceptions
 
+from graphitepager import __version__
 from graphitepager.config import get_config
 from graphitepager.description import get_description
 from graphitepager.description import missing_target_description
@@ -91,6 +92,7 @@ def verify(args):
 
 
 def run(args):
+    print 'graphite-pager {0}'.format(__version__)
     config = get_config(args.config)
     alerts = config.alerts()
     notifier_proxy = create_notifier_proxy(config)
