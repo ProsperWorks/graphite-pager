@@ -1,7 +1,12 @@
 Changelog
 =========
 
-0.2.9 (2016-10-31)
+0.2.10 (2016-10-31)
+-------------------
+
+- Skip alerting when allow_no_data is set to true. [Jose Diaz-Gonzalez]
+
+0.2.8 (2016-10-31)
 ------------------
 
 - Skip empty targets. [Jose Diaz-Gonzalez]
