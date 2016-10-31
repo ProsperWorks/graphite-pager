@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.1.3 (2016-10-31)
+------------------
+
+- Fix support for git 2.0 in release script. [Jose Diaz-Gonzalez]
+
+- Add editorconfig. [Jose Diaz-Gonzalez]
+
+- Allow no data patch. [Jacob Greenleaf]
+
+- Pull down all keys when updating local copy. [Jose Diaz-Gonzalez]
+
 0.1.2 (2016-01-25)
 ------------------
 
