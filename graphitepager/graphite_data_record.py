@@ -33,8 +33,4 @@ def _float_or_none(meta, value):
     try:
         return float(value)
     except ValueError, e:
-        print 'Error for {0}: "{1}"'.format(
-            meta,
-            e
-        )
         return None
