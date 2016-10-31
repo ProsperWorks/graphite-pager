@@ -19,7 +19,7 @@ def run_setup():
         author='Philip Cristiano',
         author_email='philipcristiano@gmail.com',
         packages=['graphitepager', 'graphitepager.notifiers'],
-        url='http://github.com/philipcristiano/graphite-pager',
+        url='http://github.com/seatgeek/graphite-pager',
         license='BSD',
         classifiers=[
             'Intended Audience :: System Administrators',
