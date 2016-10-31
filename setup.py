@@ -25,7 +25,6 @@ def run_setup():
             'Intended Audience :: System Administrators',
             'License :: OSI Approved :: BSD License',
             'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 2.6',
             'Topic :: System :: Monitoring',
         ],
         description='',
