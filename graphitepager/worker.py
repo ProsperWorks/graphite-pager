@@ -62,7 +62,7 @@ def update_notifiers_missing(notifier_proxy, alert, config):
 
 
 def create_notifier_proxy(config):
-    redis_url = config.get('REDISTOGO_URL', config.get('REDIS_URL', None))
+    redis_url = config.get('REDISTOGO_URL', config.get('REDIS_URL', 'redis://localhost:6379/0'))
     STORAGE = RedisStorage(redis, redis_url)
 
     klasses = [
