@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.2.11 (2016-10-31)
+-------------------
+
+- Drop python 2.6 support. [Jose Diaz-Gonzalez]
+
+- Remove unused variable. [Jose Diaz-Gonzalez]
+
+- Fix pep8. [Jose Diaz-Gonzalez]
+
+- Fix travis testing. [Jose Diaz-Gonzalez]
+
 0.2.10 (2016-10-31)
 -------------------
 
