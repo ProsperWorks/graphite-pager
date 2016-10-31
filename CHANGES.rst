@@ -1,6 +1,21 @@
 Changelog
 =========
 
+0.2.5 (2016-10-31)
+------------------
+
+Fix
+~~~
+
+- Set a reasonable default for redis. [Jose Diaz-Gonzalez]
+
+Other
+~~~~~
+
+- Ignore .env files. [Jose Diaz-Gonzalez]
+
+- Add more logging when there are errors. [Jose Diaz-Gonzalez]
+
 0.2.3 (2016-10-31)
 ------------------
 
