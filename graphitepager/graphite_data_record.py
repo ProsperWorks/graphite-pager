@@ -14,7 +14,7 @@ class GraphiteDataRecord(object):
         self.end_time = int(end_time)
         self.step = int(step)
 
-        self.values = [_float_or_none(value) for value in data.rsplit(',')]
+        self.values = [_float_or_none(metric_string, value) for value in data.rsplit(',')]
 
     def get_average(self):
         values = [value for value in self.values if value is not None]
@@ -29,8 +29,12 @@ class GraphiteDataRecord(object):
         raise NoDataError()
 
 
-def _float_or_none(value):
+def _float_or_none(meta, value):
     try:
         return float(value)
-    except ValueError:
+    except ValueError, e:
+        print 'Error for {0}: "{1}"'.format(
+            meta,
+            e
+        )
         return None
