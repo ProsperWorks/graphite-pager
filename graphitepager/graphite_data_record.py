@@ -34,5 +34,5 @@ class GraphiteDataRecord(object):
 def _float_or_none(meta, value):
     try:
         return float(value)
-    except ValueError, e:
+    except ValueError:
         return None
