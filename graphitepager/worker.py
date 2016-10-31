@@ -116,7 +116,11 @@ def run(args):
 
             for record in records:
                 name = alert.get('name')
+                if not record.target:
+                    continue
+
                 target = record.target
+
                 if (name, target) not in seen_alert_targets:
                     update_notifiers(
                         notifier_proxy,
