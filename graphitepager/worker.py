@@ -111,7 +111,9 @@ def run(args):
                     from_=alert.get('from'),
                 )
             except requests.exceptions.RequestException:
-                update_notifiers_missing(notifier_proxy, alert, config)
+                if not alert.alert_data['allow_no_data']:
+                    print "Error, {0}".format(alert.alert_data)
+                    update_notifiers_missing(notifier_proxy, alert, config)
                 records = []
 
             for record in records:
