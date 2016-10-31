@@ -14,7 +14,9 @@ class GraphiteDataRecord(object):
         self.end_time = int(end_time)
         self.step = int(step)
 
-        self.values = [_float_or_none(metric_string, value) for value in data.rsplit(',')]
+        self.values = []
+        for value in data.rsplit(','):
+            self.values.append(_float_or_none(metric_string, value))
 
     def get_average(self):
         values = [value for value in self.values if value is not None]
