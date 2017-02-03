@@ -5,6 +5,7 @@ import redis
 import requests
 import requests.exceptions
 
+from graphitepager import __version__
 from graphitepager.config import get_config
 from graphitepager.description import get_description
 from graphitepager.description import missing_target_description
@@ -62,7 +63,9 @@ def update_notifiers_missing(notifier_proxy, alert, config):
 
 
 def create_notifier_proxy(config):
-    redis_url = config.get('REDISTOGO_URL', config.get('REDIS_URL', None))
+    redis_url = config.get(
+        'REDISTOGO_URL',
+        config.get('REDIS_URL', 'redis://localhost:6379/0'))
     STORAGE = RedisStorage(redis, redis_url)
 
     klasses = [
@@ -91,6 +94,7 @@ def verify(args):
 
 
 def run(args):
+    print 'graphite-pager {0}'.format(__version__)
     config = get_config(args.config)
     alerts = config.alerts()
     notifier_proxy = create_notifier_proxy(config)
@@ -109,12 +113,18 @@ def run(args):
                     from_=alert.get('from'),
                 )
             except requests.exceptions.RequestException:
-                update_notifiers_missing(notifier_proxy, alert, config)
+                if not alert.alert_data['allow_no_data']:
+                    print "Error, {0}".format(alert.alert_data)
+                    update_notifiers_missing(notifier_proxy, alert, config)
                 records = []
 
             for record in records:
                 name = alert.get('name')
+                if not record.target:
+                    continue
+
                 target = record.target
+
                 if (name, target) not in seen_alert_targets:
                     update_notifiers(
                         notifier_proxy,

@@ -46,7 +46,10 @@ class Alert(object):
         try:
             value = record.get_last_value()
         except NoDataError:
-            return Level.NO_DATA, 'No data'
+            if self.alert_data['allow_no_data']:
+                return Level.NOMINAL, 'No data'
+            else:
+                return Level.NO_DATA, 'No data'
         if self.comparison_operator(value, self.get('critical')):
             return Level.CRITICAL, value
         elif self.comparison_operator(value, self.get('warning')):
