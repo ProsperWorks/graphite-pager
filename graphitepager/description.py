@@ -1,5 +1,7 @@
 from jinja2 import Template
 from urllib import urlencode
+from urlparse import urlparse
+import os.path
 
 from graphitepager.level import Level
 
@@ -39,12 +41,8 @@ Go to <a href="{{graph_url}}">the graph</a>.
 {% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
 """
 
-SLACK_ALERT_TEMPLATE = r"""{{level}} alert for
-{{alert.get('name')}} {{record.target}}. The current value is
-{{current_value}} which passes the {{threshold_level|lower}}
-value of {{threshold_value}}.
-Go to the <{{graph_url}}|graph>.
-{% if docs_url %}<{{docs_url}}|Documentation>{% endif %}.
+SLACK_ALERT_TEMPLATE = r"""{{level}} alert for {{alert.get('name')}} 
+({{current_value}}) <{{grafana_url}}|Grafana> <{{png_url}}|PNG>.
 """
 
 STDOUT_TEMPLATE = r"""{{level}} alert for
@@ -139,8 +137,18 @@ class Description(object):
             ('from', '-20mins'),
         )
         url_args = urlencode(url_params)
-        url = '{}/render/?{}'.format(graphite_url, url_args)
-        context['graph_url'] = url.replace('https', 'http')
+        png_url = '{}/render/?{}'.format(graphite_url, url_args)
+        context['png_url'] = png_url.replace('https', 'http')
+
+        path = urlparse(graphite_url).path
+        while os.path.dirname(path) != '/':
+            path = os.path.dirname(path)
+
+        grafana_url = 'https://www.hostedgraphite.com' \
+                      + path \
+                      + '/grafana/dashboard/db/watchman'
+        context['grafana_url'] = grafana_url
+
         context['threshold_value'] = alert.value_for_level(level)
         if level == Level.NOMINAL:
             context['threshold_level'] = 'warning'
