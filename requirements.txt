@@ -1,7 +1,11 @@
-Jinja2==2.6
-PyYAML==3.10
+Jinja2==2.8
+MarkupSafe==0.23
 pagerduty==0.2.1
-redis==2.6.2
-requests==2.4.1
-python-simple-hipchat==0.1
 pushbullet.py==0.10.0
+python-magic==0.4.12
+python-simple-hipchat==0.4.0
+PyYAML==3.12
+redis==2.10.5
+requests==2.11.1
+six==1.10.0
+websocket-client==0.37.0
