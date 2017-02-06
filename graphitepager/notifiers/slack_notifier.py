@@ -61,7 +61,6 @@ class SlackNotifier(BaseNotifier):
                       level=None,
                       icon_emoji=None):
         args = {
-            'text': 'graphite-pager alert',
             'attachments': [{
                 'color': color,
                 'fields': [{
