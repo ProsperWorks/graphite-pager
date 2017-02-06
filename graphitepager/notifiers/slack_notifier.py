@@ -64,7 +64,6 @@ class SlackNotifier(BaseNotifier):
             'attachments': [{
                 'color': color,
                 'fields': [{
-                    'title': level,
                     'value': message.replace("\n", ' '),
                     'short': False,
                 }]
