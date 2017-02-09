@@ -66,7 +66,7 @@ def create_notifier_proxy(config):
     redis_url = config.get(
         'REDISTOGO_URL',
         config.get('REDIS_URL', 'redis://localhost:6379/0'))
-    STORAGE = RedisStorage(redis, redis_url)
+    STORAGE = RedisStorage(redis, redis_url, config)
 
     klasses = [
         HipChatNotifier,
