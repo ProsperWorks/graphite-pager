@@ -18,5 +18,5 @@ def _graphite_url_for_target(base, target, from_='-1min', until_=None):
         from_
     )
     if until_:
-        url += '&until={1}'.format(until_)
+        url += '&until={0}'.format(until_)
     return url
