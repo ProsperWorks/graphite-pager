@@ -111,6 +111,7 @@ def run(args):
                     GraphiteDataRecord,
                     target,
                     from_=alert.get('from'),
+                    until_=alert.get('until'),
                 )
             except requests.exceptions.RequestException:
                 if not alert.alert_data['allow_no_data']:

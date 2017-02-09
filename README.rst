@@ -136,6 +136,7 @@ trigger the alert.
 Optional argument:
 
 - from - The Graphite `from` parameter for how long to query for ex. ``-10min`` default ``-1min``.
+- until - The Graphite `until` parameter for how recent the query should reach ex. ``-1min`` default none.
 - exclude - A list of targets to include. This must match the full target so it is recommended that you use the Graphite function ``alias()`` to make these readable.
 
 Ordering of Alerts
