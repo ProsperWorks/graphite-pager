@@ -11,9 +11,12 @@ def get_records(base_url, http_get, data_record, target, **kwargs):
     return records
 
 
-def _graphite_url_for_target(base, target, from_='-1min'):
-    return '{0}/render/?target={1}&rawData=true&from={2}'.format(
+def _graphite_url_for_target(base, target, from_='-1min', until_=None):
+    url = '{0}/render/?target={1}&rawData=true&from={2}'.format(
         base,
         target,
         from_
     )
+    if until_:
+        url += '&until={1}'.format(until_)
+    return url
