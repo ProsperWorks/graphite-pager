@@ -99,6 +99,7 @@ def run(args):
     alerts = config.alerts()
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
+    heartbeat_seconds = config.get('HEARTBEAT_SECONDS','60')
     while True:
         start_time = time.time()
         seen_alert_targets = set()
@@ -135,14 +136,13 @@ def run(args):
                     )
                     seen_alert_targets.add((name, target))
         time_diff = time.time() - start_time
-        sleep_for = 60 - time_diff
+        sleep_for = int(heartbeat_seconds) - time_diff
         if sleep_for > 0:
-            sleep_for = 60 - time_diff
             print 'Sleeping for {0} seconds at {1}'.format(
                 sleep_for,
                 datetime.datetime.utcnow()
             )
-            time.sleep(60 - time_diff)
+            time.sleep(sleep_for)
 
 
 def main():
