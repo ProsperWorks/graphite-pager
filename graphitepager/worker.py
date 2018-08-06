@@ -120,10 +120,11 @@ def run(args):
                     http_connect_timeout_s_ = http_connect_timeout_s,
                     http_read_timeout_s_    = http_read_timeout_s,
                 )
-            except requests.exceptions.RequestException:
+            except requests.exceptions.RequestException as e:
                 if not alert.alert_data['allow_no_data']:
                     print "Error, {0}".format(alert.alert_data)
                     update_notifiers_missing(notifier_proxy, alert, config)
+                print "Exception: %s" % e
                 records = []
 
             for record in records:
