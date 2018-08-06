@@ -100,8 +100,10 @@ def run(args):
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
     heartbeat_seconds = config.get('HEARTBEAT_SECONDS','60')
-    http_connect_timeout_s = int(config.get('GRAPHITE_CONNECT_TIMEOUT_S','0.5'))
-    http_read_timeout_s    = int(config.get('GRAPHITE_READ_TIMEOUT_S',   '10'))
+    http_connect_timeout_s = config.get('GRAPHITE_CONNECT_TIMEOUT_S','0.5')
+    http_read_timeout_s    = config.get('GRAPHITE_READ_TIMEOUT_S',   '10')
+    http_connect_timeout_s = float(http_connect_timeout_s)
+    http_read_timeout_s    = float(http_read_timeout_s)
     while True:
         start_time = time.time()
         seen_alert_targets = set()
