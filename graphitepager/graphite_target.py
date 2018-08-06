@@ -1,7 +1,17 @@
 
 def get_records(base_url, http_get, data_record, target, **kwargs):
     url = _graphite_url_for_target(base_url, target, **kwargs)
-    resp = http_get(url, verify=True)
+    http_connect_timeout_s_ = kwargs['http_connect_timeout_s_'],
+    http_read_timeout_s_    = kwargs['http_read_timeout_s_'],
+    print "url:                     %s" % [url]
+    print "kargs:                   %s" % [kwargs]
+    print "http_connect_timeout_s_: %f" % [http_connect_timeout_s_]
+    print "http_read_timeout_s_:    %f" % [http_read_timeout_s_]
+    resp = http_get(
+        url,
+        verify  = True,
+        timeout = (http_connect_timeout_s_,http_read_timeout_s_),
+    )
     resp.raise_for_status()
     records = []
     for line in resp.content.split('\n'):
