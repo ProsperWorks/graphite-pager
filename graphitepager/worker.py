@@ -100,6 +100,10 @@ def run(args):
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
     heartbeat_seconds = config.get('HEARTBEAT_SECONDS','60')
+    http_connect_timeout_s = config.get('GRAPHITE_CONNECT_TIMEOUT_S','0.5')
+    http_read_timeout_s    = config.get('GRAPHITE_READ_TIMEOUT_S',   '10')
+    http_connect_timeout_s = float(http_connect_timeout_s)
+    http_read_timeout_s    = float(http_read_timeout_s)
     while True:
         start_time = time.time()
         seen_alert_targets = set()
@@ -113,11 +117,14 @@ def run(args):
                     target,
                     from_=alert.get('from'),
                     until_=alert.get('until'),
+                    http_connect_timeout_s_ = http_connect_timeout_s,
+                    http_read_timeout_s_    = http_read_timeout_s,
                 )
-            except requests.exceptions.RequestException:
+            except requests.exceptions.RequestException as e:
                 if not alert.alert_data['allow_no_data']:
                     print "Error, {0}".format(alert.alert_data)
                     update_notifiers_missing(notifier_proxy, alert, config)
+                print "Exception: %s" % e
                 records = []
 
             for record in records:

@@ -1,7 +1,18 @@
 
-def get_records(base_url, http_get, data_record, target, **kwargs):
-    url = _graphite_url_for_target(base_url, target, **kwargs)
-    resp = http_get(url, verify=True)
+def get_records(base_url,
+                http_get,
+                data_record,
+                target,
+                from_                   = '-1min',
+                until_                  = None,
+                http_connect_timeout_s_ = 0.1,
+                http_read_timeout_s_    = 1.0):
+    url = _graphite_url_for_target(base_url, target, from_=from_, until_=until_)
+    resp = http_get(
+        url,
+        verify  = True,
+        timeout = (http_connect_timeout_s_,http_read_timeout_s_),
+    )
     resp.raise_for_status()
     records = []
     for line in resp.content.split('\n'):
