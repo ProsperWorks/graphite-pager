@@ -1,10 +1,14 @@
 
-def get_records(base_url, http_get, data_record, target, **kwargs):
-    url = _graphite_url_for_target(base_url, target, **kwargs)
-    http_connect_timeout_s_ = kwargs['http_connect_timeout_s_'],
-    http_read_timeout_s_    = kwargs['http_read_timeout_s_'],
+def get_records(base_url,
+                http_get,
+                data_record,
+                target,
+                from_='-1min',
+                until_=None,
+                http_connect_timeout_s_=0.1,
+                http_connect_timeout_s_=1.0):
+    url = _graphite_url_for_target(base_url, target, from_=from_, until_=until_)
     print "url:                     %s" % [url]
-    print "kargs:                   %s" % [kwargs]
     print "http_connect_timeout_s_: %f" % [http_connect_timeout_s_]
     print "http_read_timeout_s_:    %f" % [http_read_timeout_s_]
     resp = http_get(
