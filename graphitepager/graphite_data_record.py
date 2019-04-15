@@ -8,7 +8,12 @@ class NoDataError(ValueError):
 class GraphiteDataRecord(object):
 
     def __init__(self, metric_string):
-        meta, data = metric_string.split('|')
+        meta, data = None, None
+        try:
+            meta, data = metric_string.split('|')
+        except ValueError as e:
+            print "ValueError trying to split: %s" metric_string
+            raise e
         self.target, start_time, end_time, step = meta.rsplit(',', 3)
         self.start_time = int(start_time)
         self.end_time = int(end_time)
