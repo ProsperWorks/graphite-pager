@@ -104,11 +104,15 @@ def run(args):
     http_read_timeout_s    = config.get('GRAPHITE_READ_TIMEOUT_S',   '10')
     http_connect_timeout_s = float(http_connect_timeout_s)
     http_read_timeout_s    = float(http_read_timeout_s)
+    verbose                = True # config.get('GRAPHITE_PAGER_VERBOSE',False)
     while True:
         start_time = time.time()
         seen_alert_targets = set()
         for alert in alerts:
             target = alert.get('target')
+            if verbose:
+                print "doing alert:  {0}".format(alert)
+                print "doing target: {0}".format(target)
             try:
                 records = get_records(
                     graphite_url,
@@ -120,6 +124,8 @@ def run(args):
                     http_connect_timeout_s_ = http_connect_timeout_s,
                     http_read_timeout_s_    = http_read_timeout_s,
                 )
+                if verbose:
+                    print "got records:  {0}".format(records)
             except (ValueError, requests.exceptions.RequestException) as e:
                 if not alert.alert_data['allow_no_data']:
                     print "Error, {0}".format(alert.alert_data)
