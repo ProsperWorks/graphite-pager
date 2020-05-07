@@ -25,11 +25,8 @@ from notifiers.stdout_notifier import StdoutNotifier
 
 def update_notifiers(notifier_proxy, alert, record, graphite_url):
     alert_key = '{} {}'.format(alert.get('name'), record.target)
-    print 'alert_key:   {0}'.format(alert_key)
 
     alert_level, value = alert.check_record(record)
-    print 'alert_level: {0}'.format(alert_level)
-    print 'value:       {0}'.format(value)
 
     description = get_description(
         graphite_url,
@@ -38,7 +35,6 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
         alert_level,
         value
     )
-    print 'description: {0}'.format(description)
 
     notifier_proxy.notify(
         alert,
@@ -108,15 +104,11 @@ def run(args):
     http_read_timeout_s    = config.get('GRAPHITE_READ_TIMEOUT_S',   '10')
     http_connect_timeout_s = float(http_connect_timeout_s)
     http_read_timeout_s    = float(http_read_timeout_s)
-    verbose                = True # config.get('GRAPHITE_PAGER_VERBOSE',False)
     while True:
         start_time = time.time()
         seen_alert_targets = set()
         for alert in alerts:
             target = alert.get('target')
-            if verbose:
-                print "doing alert:  {0}".format(alert)
-                print "doing target: {0}".format(target)
             try:
                 records = get_records(
                     graphite_url,
@@ -128,8 +120,6 @@ def run(args):
                     http_connect_timeout_s_ = http_connect_timeout_s,
                     http_read_timeout_s_    = http_read_timeout_s,
                 )
-                if verbose:
-                    print "got records:  {0}".format(records)
             except (ValueError, requests.exceptions.RequestException) as e:
                 if not alert.alert_data['allow_no_data']:
                     print "Error, {0}".format(alert.alert_data)
@@ -139,10 +129,6 @@ def run(args):
 
             for record in records:
                 name = alert.get('name')
-                if verbose:
-                    print "got record:   {0}".format(record)
-                if verbose:
-                    print "got name:     {0}".format(name)
                 if not record.target:
                     continue
 
