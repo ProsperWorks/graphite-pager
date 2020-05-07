@@ -25,8 +25,11 @@ from notifiers.stdout_notifier import StdoutNotifier
 
 def update_notifiers(notifier_proxy, alert, record, graphite_url):
     alert_key = '{} {}'.format(alert.get('name'), record.target)
+    print 'alert_key:   {0}'.format(alert_key)
 
     alert_level, value = alert.check_record(record)
+    print 'alert_level: {0}'.format(alert_level)
+    print 'value:       {0}'.format(value)
 
     description = get_description(
         graphite_url,
@@ -35,6 +38,7 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
         alert_level,
         value
     )
+    print 'description: {0}'.format(description)
 
     notifier_proxy.notify(
         alert,
@@ -135,6 +139,10 @@ def run(args):
 
             for record in records:
                 name = alert.get('name')
+                if verbose:
+                    print "got record:   {0}".format(record)
+                if verbose:
+                    print "got name:     {0}".format(name)
                 if not record.target:
                     continue
 
