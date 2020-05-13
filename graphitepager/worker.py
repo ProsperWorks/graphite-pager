@@ -145,12 +145,17 @@ def run(args):
         time_diff = time.time() - start_time
         sleep_for = int(heartbeat_seconds) - time_diff
         if sleep_for > 0:
-            print 'Sleeping for {0} seconds at {1}'.format(
-                sleep_for,
-                datetime.datetime.utcnow()
+            print '{0}: ran for {1} seconds, sleeping for {2} seconds'.format(
+                datetime.datetime.utcnow(),
+                time_diff,
+                sleep_for
             )
             time.sleep(sleep_for)
-
+        else:
+            print '{0}: ran for {1} seconds, not sleeping'.format(
+                datetime.datetime.utcnow(),
+                time_diff
+            )
 
 def main():
     command_map = {
