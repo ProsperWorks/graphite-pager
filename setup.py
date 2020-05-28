@@ -27,6 +27,7 @@ def run_setup():
             'Programming Language :: Python :: 2.7',
             'Topic :: System :: Monitoring',
         ],
+        dependency_links=["https://github.com/ProsperWorks/python-pagerduty"],
         description='',
         keywords='',
         test_suite='tests',
