@@ -1,7 +1,7 @@
 import os
 import yaml
 
-from alerts import Alert
+from .alerts import Alert
 
 
 def contents_of_file(filename):

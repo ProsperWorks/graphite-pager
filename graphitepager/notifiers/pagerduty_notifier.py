@@ -13,6 +13,7 @@ class PagerdutyNotifier(BaseNotifier):
         self.enabled = config.has_keys(required)
         if self.enabled:
             self._client = pagerduty.PagerDuty(config.get('PAGERDUTY_KEY'))
+            #self._client = pygerduty.PagerDuty(api_token=config.get('PAGERDUTY_KEY'), subdomain="prosperworks")
             self._pagerduty_config = config.get('pagerduty', {})
             self._pagerduty_keys = {
                 Level.NOMINAL: self._pagerduty_config.get(

@@ -1,6 +1,6 @@
 from jinja2 import Template
-from urllib import urlencode
-from urlparse import urlparse
+from urllib.parse import urlencode
+from urllib.parse import urlparse
 import os.path
 
 from graphitepager.level import Level

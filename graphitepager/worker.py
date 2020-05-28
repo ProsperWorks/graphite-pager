@@ -15,12 +15,12 @@ from graphitepager.level import Level
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.utils import parse_args
 
-from notifiers.notifier_proxy import NotifierProxy
-from notifiers.hipchat_notifier import HipChatNotifier
-from notifiers.pagerduty_notifier import PagerdutyNotifier
-from notifiers.pushbullet_notifier import PushBulletNotifier
-from notifiers.slack_notifier import SlackNotifier
-from notifiers.stdout_notifier import StdoutNotifier
+from .notifiers.notifier_proxy import NotifierProxy
+from .notifiers.hipchat_notifier import HipChatNotifier
+from .notifiers.pagerduty_notifier import PagerdutyNotifier
+from .notifiers.pushbullet_notifier import PushBulletNotifier
+from .notifiers.slack_notifier import SlackNotifier
+from .notifiers.stdout_notifier import StdoutNotifier
 
 
 def update_notifiers(notifier_proxy, alert, record, graphite_url):
@@ -80,7 +80,7 @@ def create_notifier_proxy(config):
     for klass in klasses:
         notifier = klass(STORAGE, config)
         if notifier.enabled:
-            print 'Enabling {0}'.format(notifier._domain)
+            print('Enabling {0}'.format(notifier._domain))
             notifier_proxy.add_notifier(notifier)
 
     return notifier_proxy
@@ -89,12 +89,12 @@ def create_notifier_proxy(config):
 def verify(args):
     config = get_config(args.config)
     config.alerts()
-    print 'Valid configuration, good job!'
+    print('Valid configuration, good job!')
     return
 
 
 def run(args):
-    print 'graphite-pager {0}'.format(__version__)
+    print('graphite-pager {0}'.format(__version__))
     config = get_config(args.config)
     alerts = config.alerts()
     notifier_proxy = create_notifier_proxy(config)
@@ -122,9 +122,9 @@ def run(args):
                 )
             except (ValueError, requests.exceptions.RequestException) as e:
                 if not alert.alert_data['allow_no_data']:
-                    print "Error, {0}".format(alert.alert_data)
+                    print("Error, {0}".format(alert.alert_data))
                     update_notifiers_missing(notifier_proxy, alert, config)
-                print "Exception in %s: %s" % (alert.get('name'),e)
+                print("Exception in %s: %s" % (alert.get('name'),e))
                 records = []
 
             for record in records:
@@ -145,17 +145,17 @@ def run(args):
         time_diff = time.time() - start_time
         sleep_for = int(heartbeat_seconds) - time_diff
         if sleep_for > 0:
-            print '{0}: ran for {1} seconds, sleeping for {2} seconds'.format(
+            print('{0}: ran for {1} seconds, sleeping for {2} seconds'.format(
                 datetime.datetime.utcnow(),
                 time_diff,
                 sleep_for
-            )
+            ))
             time.sleep(sleep_for)
         else:
-            print '{0}: ran for {1} seconds, not sleeping'.format(
+            print('{0}: ran for {1} seconds, not sleeping'.format(
                 datetime.datetime.utcnow(),
                 time_diff
-            )
+            ))
 
 def main():
     command_map = {

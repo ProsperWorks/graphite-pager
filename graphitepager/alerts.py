@@ -1,7 +1,7 @@
 import operator
 
-from graphite_data_record import NoDataError
-from level import Level
+from .graphite_data_record import NoDataError
+from .level import Level
 
 
 class Alert(object):

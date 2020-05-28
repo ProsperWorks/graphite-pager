@@ -15,7 +15,7 @@ class StdoutNotifier(BaseNotifier):
                 description,
                 nominal=None):
 
-        print '[{0}] {1}'.format(
+        print('[{0}] {1}'.format(
             level,
             description.stdout().replace("\n", ' ')
-        )
+        ))
