@@ -21,6 +21,7 @@ class _BaseTest(TestCase):
 
     def setUp(self):
         self.record = GraphiteDataRecord(self.data)
+        #self.record = GraphiteDataRecord(SAMPLE_FINE)
 
     def test_metric_name(self):
         self.assertEqual(self.record.target, 'stat.one')

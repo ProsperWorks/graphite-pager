@@ -9,4 +9,4 @@ requests==2.18
 six==1.10.0
 websocket-client==0.37.0
 mock==4.0.2
-#git+git://github.com:ProsperWorks/python-pagerduty.git@master#egg=pagerduty
+python3-pagerduty

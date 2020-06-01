@@ -19,7 +19,7 @@ def run_setup():
         author='Philip Cristiano',
         author_email='philipcristiano@gmail.com',
         packages=['graphitepager', 'graphitepager.notifiers'],
-        url='http://github.com/seatgeek/graphite-pager',
+        url='http://github.com/prosperworks/graphite-pager',
         license='BSD',
         classifiers=[
             'Intended Audience :: System Administrators',
@@ -27,7 +27,6 @@ def run_setup():
             'Programming Language :: Python :: 2.7',
             'Topic :: System :: Monitoring',
         ],
-        dependency_links=["https://github.com/ProsperWorks/python-pagerduty"],
         description='',
         keywords='',
         test_suite='tests',
