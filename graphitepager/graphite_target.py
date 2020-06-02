@@ -15,7 +15,7 @@ def get_records(base_url,
     )
     resp.raise_for_status()
     records = []
-    for line in resp.content.split('\n'):
+    for line in resp.text.split('\n'):
         if line:
             record = data_record(line)
             records.append(record)
