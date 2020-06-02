@@ -46,7 +46,7 @@ class PagerdutyNotifier(BaseNotifier):
         # in the next business hours".
         #
         if level == Level.CRITICAL:
-            description = str(description)
+            description = bytes(description)
             incident_key = self._client.trigger(
                 incident_key=incident_key,
                 description=description
