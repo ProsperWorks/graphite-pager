@@ -47,7 +47,7 @@ class PagerdutyNotifier(BaseNotifier):
         #
         if level == Level.CRITICAL:
             description = str(description)
-            description = bytes(description)
+            description = bytes(description, "UTF-8")
             incident_key = self._client.trigger(
                 incident_key=incident_key,
                 description=description
