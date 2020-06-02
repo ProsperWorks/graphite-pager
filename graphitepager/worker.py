@@ -163,7 +163,6 @@ def main():
         'run': run,
     }
     args = parse_args()
-    print("ARGS: {0}".format(args))
     return command_map[args.command](args)
 
 
