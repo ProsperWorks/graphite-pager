@@ -1,4 +1,5 @@
 import json
+import requests
 import urllib.request, urllib.parse, urllib.error
 import urllib.request, urllib.error, urllib.parse
 
@@ -78,7 +79,8 @@ class SlackNotifier(BaseNotifier):
 
         try:
             url = self._get_service_url(alert, level)
-            response = urllib.request.urlopen(url, encoded_args).read()
+            response = requests.post(url, data=encoded_args).text
+            #response = urllib.request.urlopen(url, encoded_args).read()
         except urllib.error.HTTPError as e:
             print('--> Unable to send message to slack: "{0}"'.format(
                 e
