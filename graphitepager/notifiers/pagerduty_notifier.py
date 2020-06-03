@@ -1,5 +1,5 @@
 import pagerduty
-
+import sys
 from graphitepager.level import Level
 from graphitepager.notifiers.base import BaseNotifier
 
@@ -31,6 +31,7 @@ class PagerdutyNotifier(BaseNotifier):
             }
 
     def notify(self, alert, alert_key, level, description):
+        print("DESCRIPTION: {0}".format(description), file=sys.stderr)
         service_key = self._client.service_key
         self._client.service_key = self._get_service_key(alert, level)
 
