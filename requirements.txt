@@ -5,7 +5,7 @@ python-magic==0.4.12
 python-simple-hipchat==0.4.0
 PyYAML==5.1
 redis==2.10.5
-requests==2.18
+requests==2.21
 six==1.10.0
 websocket-client==0.37.0
 mock==4.0.2
