@@ -31,7 +31,6 @@ class PagerdutyNotifier(BaseNotifier):
             }
 
     def notify(self, alert, alert_key, level, description):
-        print("DESCRIPTION: {0}".format(description), file=sys.stderr)
         service_key = self._client.service_key
         self._client.service_key = self._get_service_key(alert, level)
 
@@ -47,6 +46,7 @@ class PagerdutyNotifier(BaseNotifier):
         # in the next business hours".
         #
         if level == Level.CRITICAL:
+            print("DESCRIPTION: {0}".format(description), file=sys.stderr)
             description = str(description)
             incident_key = self._client.trigger(
                 incident_key=incident_key,
