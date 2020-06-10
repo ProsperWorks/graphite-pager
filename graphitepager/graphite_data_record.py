@@ -12,7 +12,7 @@ class GraphiteDataRecord(object):
         try:
             meta, data = metric_string.rsplit('|',1)
         except ValueError as e:
-            print "ValueError trying to split on '|': %s" % metric_string
+            print("ValueError trying to split on '|': %s" % metric_string)
             raise e
         self.target, start_time, end_time, step = meta.rsplit(',', 3)
         self.start_time = int(start_time)

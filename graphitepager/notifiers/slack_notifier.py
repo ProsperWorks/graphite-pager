@@ -1,6 +1,5 @@
 import json
-import urllib
-import urllib2
+import requests
 
 from graphitepager.level import Level
 from graphitepager.notifiers.base import BaseNotifier
@@ -74,23 +73,22 @@ class SlackNotifier(BaseNotifier):
             args['icon_emoji'] = icon_emoji
 
         values = {'payload': json.dumps(args)}
-        encoded_args = urllib.urlencode(values)
 
         try:
             url = self._get_service_url(alert, level)
-            response = urllib2.urlopen(url, encoded_args).read()
-        except urllib2.HTTPError as e:
-            print '--> Unable to send message to slack: "{0}"'.format(
+            response = requests.post(url, data=values).content
+        except Exception as e:
+            print('--> Unable to send message to slack: "{0}"'.format(
                 e
-            )
+            ))
             return False
 
         if response == 'ok':
             return True
 
-        print '--> Unable to send message to slack: "{0}"'.format(
+        print('--> Unable to send message to slack: "{0}"'.format(
             message
-        )
+        ))
         return False
 
     def _get_service_url(self, alert, level):

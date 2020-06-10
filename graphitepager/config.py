@@ -1,7 +1,7 @@
 import os
 import yaml
 
-from alerts import Alert
+from .alerts import Alert
 
 
 def contents_of_file(filename):
@@ -19,7 +19,7 @@ class Config(object):
 
     def __init__(self, path):
         alert_yml = contents_of_file(path)
-        self._data = yaml.load(alert_yml)
+        self._data = yaml.load(alert_yml, Loader=yaml.SafeLoader)
 
     def data(self, key):
         return self._data.get(key)

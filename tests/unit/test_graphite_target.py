@@ -30,7 +30,7 @@ class TestGraphiteTarget(TestCase):
 
     def test_hits_correct_url(self):
         url = 'BASE_URL/render/?target=TARGET&rawData=true&from=-1min'
-        self.http_get.assert_called_with(url, verify=True)
+        self.http_get.assert_called_with(url, verify=True, timeout=(0.1, 1.0))
 
     def should_create_two_records(self):
         calls = [call(SAMPLE_1), call(SAMPLE_2)]

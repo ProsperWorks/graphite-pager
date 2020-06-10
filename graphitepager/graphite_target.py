@@ -15,7 +15,7 @@ def get_records(base_url,
     )
     resp.raise_for_status()
     records = []
-    for line in resp.content.split('\n'):
+    for line in resp.text.split('\n'):
         if line:
             record = data_record(line)
             records.append(record)
@@ -23,7 +23,7 @@ def get_records(base_url,
 
 
 def _graphite_url_for_target(base, target, from_='-1min', until_=None):
-    url = '{0}/render/?target={1}&format=raw&from={2}'.format(
+    url = '{0}/render/?target={1}&rawData=true&from={2}'.format(
         base,
         target,
         from_
