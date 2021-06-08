@@ -13,7 +13,7 @@ class BaseNotifier(object):
             self._domain,
             alert_key
         )
-        should_notify = (Level.WARNING, Level.CRITICAL, Level.NO_DATA)
+        should_notify = (Level.WARNING, Level.CRITICAL)
         if level == Level.NOMINAL and notified:
             self._notify(
                 alert,
