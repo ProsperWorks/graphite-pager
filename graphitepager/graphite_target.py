@@ -1,3 +1,4 @@
+import os
 
 def get_records(base_url,
                 http_get,

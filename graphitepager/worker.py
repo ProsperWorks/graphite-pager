@@ -109,6 +109,7 @@ def run(args):
         seen_alert_targets = set()
         for alert in alerts:
             target = alert.get('target')
+            print('target: {0}'.format(target))
             try:
                 records = get_records(
                     graphite_url,
