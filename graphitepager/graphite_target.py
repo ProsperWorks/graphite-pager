@@ -10,6 +10,8 @@ def get_records(base_url,
     url = _graphite_url_for_target(base_url, target, from_=from_, until_=until_)
     if 'true' == os.environ.get('VERBOSE_URL'): # default off
         print('url:  {0}'.format(url))
+    else:
+        print('url B:  {0}'.format(url))
     resp = http_get(
         url,
         verify  = True,
@@ -17,6 +19,8 @@ def get_records(base_url,
     )
     if 'true' == os.environ.get('VERBOSE_RESP'): # default off
         print('resp: {0}'.format(resp))
+    else:
+        print('resp B: {0}'.format(resp))
     resp.raise_for_status()
     records = []
     for line in resp.text.split('\n'):
