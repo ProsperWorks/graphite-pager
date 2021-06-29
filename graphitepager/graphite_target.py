@@ -8,11 +8,15 @@ def get_records(base_url,
                 http_connect_timeout_s_ = 0.1,
                 http_read_timeout_s_    = 1.0):
     url = _graphite_url_for_target(base_url, target, from_=from_, until_=until_)
+    if 'true' == os.environ.get('VERBOSE_URL'): # default off
+        print('url:  {0}'.format(url))
     resp = http_get(
         url,
         verify  = True,
         timeout = (http_connect_timeout_s_,http_read_timeout_s_),
     )
+    if 'true' == os.environ.get('VERBOSE_RESP'): # default off
+        print('resp: {0}'.format(resp))
     resp.raise_for_status()
     records = []
     for line in resp.text.split('\n'):
