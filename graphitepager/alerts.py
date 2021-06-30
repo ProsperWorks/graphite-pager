@@ -8,12 +8,14 @@ class Alert(object):
 
     def __init__(self, alert_data, doc_url=None):
         self.alert_data = dict(alert_data)
+        print 'ALERT_DATA A: {0}'.format(alert_data)
         self.alert_data['allow_no_data'] = self.alert_data.get(
             'allow_no_data', False)
         self.alert_data['doc_url'] = self.alert_data.get('doc_url', doc_url)
         self.alert_data['exclude'] = set(self.alert_data.get('exclude', []))
         self.alert_data['from'] = self.alert_data.get('from', '-1min')
         self.alert_data['until'] = self.alert_data.get('until', None)
+        print 'ALERT_DATA B: {0}'.format(alert_data)
 
         self.comparison_operator = self._determine_comparison_operator(
             self.get('warning'),

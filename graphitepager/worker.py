@@ -116,8 +116,8 @@ def run(args):
                     requests.get,
                     GraphiteDataRecord,
                     target,
-                    from_=alert.get('from'),
-                    until_=alert.get('until'),
+                    from_  = alert.get('from'),
+                    until_ = alert.get('until'),
                     http_connect_timeout_s_ = http_connect_timeout_s,
                     http_read_timeout_s_    = http_read_timeout_s,
                 )
