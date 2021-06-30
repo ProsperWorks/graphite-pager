@@ -109,15 +109,14 @@ def run(args):
         seen_alert_targets = set()
         for alert in alerts:
             target = alert.get('target')
-            print('target: {0}'.format(target))
             try:
                 records = get_records(
                     graphite_url,
                     requests.get,
                     GraphiteDataRecord,
                     target,
-                    from_  = alert.get('from'),
-                    until_ = alert.get('until'),
+                    from_=alert.get('from'),
+                    until_=alert.get('until'),
                     http_connect_timeout_s_ = http_connect_timeout_s,
                     http_read_timeout_s_    = http_read_timeout_s,
                 )
