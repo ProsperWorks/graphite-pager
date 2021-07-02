@@ -14,7 +14,8 @@ class Alert(object):
         self.alert_data['exclude'] = set(self.alert_data.get('exclude', []))
         self.alert_data['from'] = self.alert_data.get('from', '-1min')
         self.alert_data['until'] = self.alert_data.get('until', None)
-
+        if 'true' == os.environ.get('VERBOSE_INIT'): # default off
+          print('alert: {0}'.format(self.alert_data))
         self.comparison_operator = self._determine_comparison_operator(
             self.get('warning'),
             self.get('critical')
