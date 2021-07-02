@@ -1,8 +1,8 @@
 import operator
+import os
 
 from .graphite_data_record import NoDataError
 from .level import Level
-
 
 class Alert(object):
 
