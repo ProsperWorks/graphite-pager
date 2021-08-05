@@ -28,7 +28,7 @@ def get_records(base_url,
 
 
 def _graphite_url_for_target(base, target, from_='-1min', until_=None):
-    url = '{0}/render/?target={1}&rawData=true&from={2}'.format(
+    url = '{0}/render/?target={1}&rawData=true&noNullPoints=true&from={2}'.format(
         base,
         target,
         from_
