@@ -43,3 +43,20 @@ class RedisStorage(object):
 
     def _redis_key_from_alert_key(self, alert_key):
         return '{0}-incident-key'.format(alert_key)
+
+    def increment_no_data_count_for_alert(self, alert):
+        key = '{0}-no-data-counter'.format(alert)
+        exp = int(self._config.get('NO_DATA_COUNTER_EXPIRATION_SECONDS',600))
+        counter = int(self._client.get(key) or 0) + 1
+        if self._config.get('NO_DATA_COUNTER_VERBOSE',None):
+            print("incrementing 'NO DATA' counter for {0} to {1} with TTL {2}".format(key, counter, exp))
+        self._client.set(key, counter, ex=exp)
+        return counter
+
+    def reset_no_data_count_for_alert(self, alert):
+        key = '{0}-no-data-counter'.format(alert)
+        exp = int(self._config.get('NO_DATA_COUNTER_EXPIRATION_SECONDS',600))
+        if self._config.get('NO_DATA_COUNTER_VERBOSE',None):
+            print("resetting 'NO DATA' count for {0} to 0 with TTL {1}".format(key, exp))
+        self._client.set(key, 0, ex=exp)
+        return 0
