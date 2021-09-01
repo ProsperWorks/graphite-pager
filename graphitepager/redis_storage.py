@@ -49,14 +49,14 @@ class RedisStorage(object):
         exp = int(self._config.get('NO_DATA_COUNTER_EXPIRATION_SECONDS',300)),
         counter = (self._client.get(key) or 0) + 1
         if self._config.get('NO_DATA_COUNTER_VERBOSE',None):
-            print("incrementing 'NO DATA' counter for {0} to {1}".format(alert, counter))
+            print("incrementing 'NO DATA' counter for {0} to {1} with TTL {2}".format(key, counter, exp))
         self._client.setex(key, exp, counter)
         return counter
 
     def reset_no_data_count_for_alert(self, alert):
-        if self._config.get('NO_DATA_COUNTER_VERBOSE',None):
-            print("resetting 'NO DATA' count for {0}".format(alert))
         key = '{0}-no-data-counter'.format(alert)
         exp = int(self._config.get('NO_DATA_COUNTER_EXPIRATION_SECONDS',300)),
+        if self._config.get('NO_DATA_COUNTER_VERBOSE',None):
+            print("resetting 'NO DATA' count for {0} to 0 with TTL {1}".format(key, exp))
         self._client.setex(key, exp, 0)
         return 0
