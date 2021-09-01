@@ -29,7 +29,7 @@ class BaseNotifier(object):
             )
         elif level == Level.NO_DATA:
             counter = self._storage.increment_no_data_count_for_alert(alert_key)
-            if counter > self._config('NO_DATA_NOTIFICATION_THRESHOLD', 3):
+            if counter > self._config.get('NO_DATA_NOTIFICATION_THRESHOLD', 3):
                 self._notify(
                     alert,
                     level,
