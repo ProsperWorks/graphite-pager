@@ -146,7 +146,7 @@ class Description(object):
 
         grafana_url = 'https://www.hostedgraphite.com' \
                       + path \
-                      + '/grafana/dashboard/db/watchman'
+                      + '/grafana/dashboard/db/ali-production-watchman'
         context['grafana_url'] = grafana_url
 
         context['threshold_value'] = alert.value_for_level(level)
