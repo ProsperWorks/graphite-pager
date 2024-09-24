@@ -144,9 +144,11 @@ class Description(object):
         while os.path.dirname(path) != '/':
             path = os.path.dirname(path)
 
-        grafana_url = 'https://www.hostedgraphite.com' \
+        grafana_url = 'https://' \
                       + path \
-                      + '/grafana/dashboard/db/ali-production-watchman'
+                      + '.hostedgraphite.com/d/' \
+                      + 'bd9883de-1f24-47d8-ba91-5672ed8ff4b9/' \
+                      + 'ali-production-watchman'
         context['grafana_url'] = grafana_url
 
         context['threshold_value'] = alert.value_for_level(level)
