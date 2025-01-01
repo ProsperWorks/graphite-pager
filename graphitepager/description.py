@@ -144,7 +144,7 @@ class Description(object):
         while os.path.dirname(path) != '/':
             path = os.path.dirname(path)
 
-        grafana_url = 'https://' \
+        grafana_url = 'https:/' \
                       + path \
                       + '.hostedgraphite.com/d/' \
                       + 'bd9883de-1f24-47d8-ba91-5672ed8ff4b9/' \
