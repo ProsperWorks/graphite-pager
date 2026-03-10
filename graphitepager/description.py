@@ -121,7 +121,7 @@ class Description(object):
                               current_value):
         context = dict(locals())
         context['graphite_url'] = graphite_url
-        if type(record) == str:
+        if isinstance(record, str):
             context['docs_url'] = alert.documentation_url()
         else:
             context['docs_url'] = alert.documentation_url(record.target)

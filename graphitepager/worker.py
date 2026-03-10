@@ -1,4 +1,5 @@
 import datetime
+from datetime import timezone
 import time
 
 import redis
@@ -146,14 +147,14 @@ def run(args):
         sleep_for = int(heartbeat_seconds) - time_diff
         if sleep_for > 0:
             print('{0}: ran for {1} seconds, sleeping for {2} seconds'.format(
-                datetime.datetime.utcnow(),
+                datetime.datetime.now(timezone.utc),
                 time_diff,
                 sleep_for
             ))
             time.sleep(sleep_for)
         else:
             print('{0}: ran for {1} seconds, not sleeping'.format(
-                datetime.datetime.utcnow(),
+                datetime.datetime.now(timezone.utc),
                 time_diff
             ))
 
