@@ -11,7 +11,7 @@ notification alerts if a metric reaches a warning or critical level.
 Requirements
 ============
 
-* Python 2.7+
+* Python 3.12+
 * Graphite
 * Redis
 * libmagic

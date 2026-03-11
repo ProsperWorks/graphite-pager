@@ -24,9 +24,10 @@ def run_setup():
         classifiers=[
             'Intended Audience :: System Administrators',
             'License :: OSI Approved :: BSD License',
-            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3.12',
             'Topic :: System :: Monitoring',
         ],
+        python_requires='>=3.12',
         description='',
         keywords='',
         test_suite='tests',
