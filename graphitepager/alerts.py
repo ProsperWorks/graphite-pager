@@ -3,6 +3,7 @@ import os
 
 from .graphite_data_record import NoDataError
 from .level import Level
+from .utils import parse_duration_to_seconds
 
 class Alert(object):
 
@@ -14,6 +15,11 @@ class Alert(object):
         self.alert_data['exclude'] = set(self.alert_data.get('exclude', []))
         self.alert_data['from'] = self.alert_data.get('from', '-1min')
         self.alert_data['until'] = self.alert_data.get('until', None)
+        # Parse no_data_timeout from string (e.g., '10m') to seconds
+        no_data_timeout_str = self.alert_data.get('no_data_timeout')
+        self.no_data_timeout_seconds = None
+        if no_data_timeout_str:
+            self.no_data_timeout_seconds = parse_duration_to_seconds(no_data_timeout_str)
         if 'true' == os.environ.get('VERBOSE_INIT'): # default off
           print('alert: {0}'.format(self.alert_data))
         self.comparison_operator = self._determine_comparison_operator(

@@ -60,3 +60,26 @@ class RedisStorage(object):
             print("resetting 'NO DATA' count for {0} to 0 with TTL {1}".format(key, exp))
         self._client.set(key, 0, ex=exp)
         return 0
+
+    def get_first_no_data_timestamp(self, alert_key):
+        """Get the timestamp when NO_DATA was first detected for an alert."""
+        key = '{0}-no-data-first-timestamp'.format(alert_key)
+        value = self._client.get(key)
+        if value is not None:
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                return None
+        return None
+
+    def set_first_no_data_timestamp(self, alert_key, timestamp):
+        """Set the timestamp when NO_DATA was first detected for an alert."""
+        key = '{0}-no-data-first-timestamp'.format(alert_key)
+        # Use a long expiration (24 hours) to handle extended outages
+        exp = int(self._config.get('NO_DATA_TIMESTAMP_EXPIRATION_SECONDS', 86400))
+        self._client.set(key, str(timestamp), ex=exp)
+
+    def clear_first_no_data_timestamp(self, alert_key):
+        """Clear the first NO_DATA timestamp when data returns."""
+        key = '{0}-no-data-first-timestamp'.format(alert_key)
+        self._client.delete(key)

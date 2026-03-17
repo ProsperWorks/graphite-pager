@@ -24,7 +24,7 @@ from .notifiers.slack_notifier import SlackNotifier
 from .notifiers.stdout_notifier import StdoutNotifier
 
 
-def update_notifiers(notifier_proxy, alert, record, graphite_url):
+def update_notifiers(notifier_proxy, alert, record, graphite_url, circuit_breaker_active=False):
     alert_key = '{} {}'.format(alert.get('name'), record.target)
 
     alert_level, value = alert.check_record(record)
@@ -41,11 +41,14 @@ def update_notifiers(notifier_proxy, alert, record, graphite_url):
         alert,
         alert_key,
         alert_level,
-        description
+        description,
+        circuit_breaker_active=circuit_breaker_active
     )
+    
+    return alert_level
 
 
-def update_notifiers_missing(notifier_proxy, alert, config):
+def update_notifiers_missing(notifier_proxy, alert, config, circuit_breaker_active=False):
     graphite_url = config.get('GRAPHITE_URL')
     description = missing_target_description(
         graphite_url,
@@ -59,8 +62,11 @@ def update_notifiers_missing(notifier_proxy, alert, config):
         alert,
         alert.get('target'),
         Level.NO_DATA,
-        description
+        description,
+        circuit_breaker_active=circuit_breaker_active
     )
+    
+    return Level.NO_DATA
 
 
 def create_notifier_proxy(config):
@@ -105,9 +111,16 @@ def run(args):
     http_read_timeout_s    = config.get('GRAPHITE_READ_TIMEOUT_S',   '10')
     http_connect_timeout_s = float(http_connect_timeout_s)
     http_read_timeout_s    = float(http_read_timeout_s)
+    # Circuit breaker threshold: fraction of NO_DATA alerts to trigger (default 0.5 = 50%)
+    circuit_breaker_threshold = float(config.get('CIRCUIT_BREAKER_THRESHOLD', '0.5'))
+    
     while True:
         start_time = time.time()
         seen_alert_targets = set()
+        cycle_results = []  # Collect all alert results for this cycle
+        pending_notifications = []  # Store notifications to send after circuit breaker check
+        
+        # First pass: collect all alert results
         for alert in alerts:
             target = alert.get('target')
             try:
@@ -124,7 +137,9 @@ def run(args):
             except (ValueError, requests.exceptions.RequestException) as e:
                 if not alert.alert_data['allow_no_data']:
                     print("Error, {0}".format(alert.alert_data))
-                    update_notifiers_missing(notifier_proxy, alert, config)
+                    # Store for notification after circuit breaker check
+                    pending_notifications.append(('missing', alert, None))
+                    cycle_results.append(Level.NO_DATA)
                 print("Exception in %s: %s" % (alert.get('name'),e))
                 records = []
 
@@ -136,13 +151,34 @@ def run(args):
                 target = record.target
 
                 if (name, target) not in seen_alert_targets:
-                    update_notifiers(
-                        notifier_proxy,
-                        alert,
-                        record,
-                        graphite_url
-                    )
+                    # Check the record to get the level
+                    alert_level, value = alert.check_record(record)
+                    cycle_results.append(alert_level)
+                    # Store for notification after circuit breaker check
+                    pending_notifications.append(('record', alert, record))
                     seen_alert_targets.add((name, target))
+        
+        # Calculate circuit breaker status at the end of the cycle
+        circuit_breaker_active = False
+        if cycle_results:
+            no_data_count = sum(1 for level in cycle_results if level == Level.NO_DATA)
+            total_count = len(cycle_results)
+            no_data_fraction = float(no_data_count) / total_count if total_count > 0 else 0.0
+            
+            circuit_breaker_active = no_data_fraction >= circuit_breaker_threshold
+            
+            if circuit_breaker_active:
+                print('WARNING: {0:.1f}% ({1}/{2}) alerts are NO_DATA. '
+                      'Most likely problem from HostedGraphite'.format(
+                    no_data_fraction * 100, no_data_count, total_count))
+        
+        # Second pass: send notifications with circuit breaker flag
+        for notification_type, alert, record in pending_notifications:
+            if notification_type == 'missing':
+                update_notifiers_missing(notifier_proxy, alert, config, circuit_breaker_active=circuit_breaker_active)
+            elif notification_type == 'record':
+                update_notifiers(notifier_proxy, alert, record, graphite_url, circuit_breaker_active=circuit_breaker_active)
+        
         time_diff = time.time() - start_time
         sleep_for = int(heartbeat_seconds) - time_diff
         if sleep_for > 0:
