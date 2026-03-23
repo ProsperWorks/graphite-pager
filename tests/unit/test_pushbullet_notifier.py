@@ -31,6 +31,9 @@ class TestPushBulletNotifier(TestCase):
         ]
         self.mock_alert = MagicMock(Alert)
         self.mock_alert.get.return_value = "name"
+        self.mock_alert.no_data_timeout_seconds = None
+        self.mock_redis_storage.is_recovery_pending_for_domain_and_key.\
+            return_value = False
 
     def default_notifier(self):
         def mock_get(key, default=None):
@@ -110,6 +113,8 @@ class TestPushBulletNotifier(TestCase):
         )
         self.mock_redis_storage.remove_lock_for_domain_and_key.\
             assert_called_once_with('PushBullet', self.alert_key)
+        self.mock_redis_storage.clear_recovery_pending_for_domain_and_key.\
+            assert_called_once_with('PushBullet', self.alert_key)
 
     def test_should_notify_pb_of_warning_if_had_not_notified_before(self):
         self.default_notifier()
@@ -130,6 +135,8 @@ class TestPushBulletNotifier(TestCase):
         )
 
         self.mock_redis_storage.set_lock_for_domain_and_key.\
+            assert_called_once_with('PushBullet', self.alert_key)
+        self.mock_redis_storage.set_recovery_pending_for_domain_and_key.\
             assert_called_once_with('PushBullet', self.alert_key)
 
     def test_should_notify_pbn_of_critical_if_had_not_notified_before(self):
@@ -152,12 +159,16 @@ class TestPushBulletNotifier(TestCase):
 
         self.mock_redis_storage.set_lock_for_domain_and_key.\
             assert_called_once_with('PushBullet', self.alert_key)
+        self.mock_redis_storage.set_recovery_pending_for_domain_and_key.\
+            assert_called_once_with('PushBullet', self.alert_key)
 
     def test_should_notify_pb_of_no_data_if_had_not_notified_before(self):
         self.default_notifier()
 
         self.mock_redis_storage.is_locked_for_domain_and_key.\
             return_value = False
+        self.mock_redis_storage.increment_no_data_count_for_alert.\
+            return_value = 4
 
         self.pbn.notify(
             self.mock_alert,
@@ -170,9 +181,6 @@ class TestPushBulletNotifier(TestCase):
             self.description.graphite_url,
             body=str(self.description)
         )
-
-        self.mock_redis_storage.set_lock_for_domain_and_key.\
-            assert_called_once_with('PushBullet', self.alert_key)
 
     def test_should_notify_devices(self):
         self.devices_notifier()
@@ -197,6 +205,8 @@ class TestPushBulletNotifier(TestCase):
 
         self.mock_redis_storage.set_lock_for_domain_and_key.\
             assert_called_once_with('PushBullet', self.alert_key)
+        self.mock_redis_storage.set_recovery_pending_for_domain_and_key.\
+            assert_called_once_with('PushBullet', self.alert_key)
 
     def test_should_notify_contacts(self):
         self.contacts_notifier()
@@ -220,4 +230,6 @@ class TestPushBulletNotifier(TestCase):
         self.assertEqual(contacts[1].mock_calls, [])
 
         self.mock_redis_storage.set_lock_for_domain_and_key.\
+            assert_called_once_with('PushBullet', self.alert_key)
+        self.mock_redis_storage.set_recovery_pending_for_domain_and_key.\
             assert_called_once_with('PushBullet', self.alert_key)

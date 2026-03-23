@@ -16,8 +16,12 @@ class BaseNotifier(object):
             self._domain,
             alert_key
         )
+        recovery_pending = self._storage.is_recovery_pending_for_domain_and_key(
+            self._domain,
+            alert_key
+        )
         should_notify = (Level.WARNING, Level.CRITICAL)
-        if level == Level.NOMINAL and notified:
+        if level == Level.NOMINAL and (notified or recovery_pending):
             self._notify(
                 alert,
                 level,
@@ -30,27 +34,31 @@ class BaseNotifier(object):
                 self._domain,
                 alert_key
             )
+            self._storage.clear_recovery_pending_for_domain_and_key(
+                self._domain,
+                alert_key
+            )
         elif level == Level.NO_DATA:
             # Global circuit breaker: suppress all NO_DATA if circuit breaker is active
             if circuit_breaker_active:
                 return
-            
+
             # Check no_data_timeout if configured
             current_time = time.time()
             first_no_data_time = self._storage.get_first_no_data_timestamp(alert_key)
-            
+
             # If this is the first time we see NO_DATA, record the timestamp
             if first_no_data_time is None:
                 self._storage.set_first_no_data_timestamp(alert_key, current_time)
                 first_no_data_time = current_time
-            
+
             # If no_data_timeout is set, only notify after the timeout has elapsed
             if alert.no_data_timeout_seconds is not None:
                 elapsed = current_time - first_no_data_time
                 if elapsed < alert.no_data_timeout_seconds:
                     # Timeout hasn't elapsed yet, don't notify
                     return
-            
+
             counter = self._storage.increment_no_data_count_for_alert(alert_key)
             if counter > self._config.get('NO_DATA_NOTIFICATION_THRESHOLD', 3):
                 self._notify(
@@ -72,9 +80,19 @@ class BaseNotifier(object):
                 self._domain,
                 alert_key
             )
+            self._storage.set_recovery_pending_for_domain_and_key(
+                self._domain,
+                alert_key
+            )
         elif level == Level.NOMINAL:
             # Clear NO_DATA timestamp when we get nominal data
             self._storage.clear_first_no_data_timestamp(alert_key)
+        elif level in should_notify and notified:
+            # Still breaching; lock suppresses repeat Slack, but keep recovery_pending fresh
+            self._storage.set_recovery_pending_for_domain_and_key(
+                self._domain,
+                alert_key
+            )
 
     def _notify(self,
                 alert,

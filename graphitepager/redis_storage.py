@@ -41,6 +41,29 @@ class RedisStorage(object):
             return False
         return True
 
+    def _recovery_pending_key(self, domain, key):
+        return 'RECOVERY-PENDING-{0}-{1}'.format(domain, key)
+
+    def set_recovery_pending_for_domain_and_key(self, domain, key):
+        """Mark that we owe a Nominal/OK notification when the metric recovers.
+
+        Separate from the notification lock: the lock expires after
+        NOTIFICATION_EXPIRATION_SECONDS (re-alert path), but recovery_pending
+        stays until we send OK or TTL expires. Call again on each cycle while
+        still WARNING/CRITICAL to refresh TTL (including lock-suppressed cycles).
+        """
+        rkey = self._recovery_pending_key(domain, key)
+        exp = int(self._config.get('RECOVERY_PENDING_EXPIRATION_SECONDS', 604800))
+        self._client.set(rkey, True, ex=exp)
+
+    def is_recovery_pending_for_domain_and_key(self, domain, key):
+        rkey = self._recovery_pending_key(domain, key)
+        return self._client.get(rkey) is not None
+
+    def clear_recovery_pending_for_domain_and_key(self, domain, key):
+        rkey = self._recovery_pending_key(domain, key)
+        self._client.delete(rkey)
+
     def _redis_key_from_alert_key(self, alert_key):
         return '{0}-incident-key'.format(alert_key)
 

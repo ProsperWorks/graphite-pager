@@ -26,6 +26,9 @@ class TestHipChatNotifier(TestCase):
 
         self.hcn = HipChatNotifier(self.mock_redis_storage, self.mock_config)
         self.hcn._client = self.mock_hipchat_client
+        self.mock_redis_storage.is_recovery_pending_for_domain_and_key.\
+            return_value = False
+        self.mock_alert.no_data_timeout_seconds = None
 
     def mock_get(self, key, default=None):
         if key == 'HIPCHAT_KEY':
@@ -78,6 +81,35 @@ class TestHipChatNotifier(TestCase):
         )
         self.mock_redis_storage.remove_lock_for_domain_and_key.\
             assert_called_once_with('HipChat', self.alert_key)
+        self.mock_redis_storage.clear_recovery_pending_for_domain_and_key.\
+            assert_called_once_with('HipChat', self.alert_key)
+
+    def test_should_notify_hipchat_resolved_if_nominal_and_recovery_pending_without_lock(
+            self):
+        """Lock can expire before recovery; recovery_pending still warrants green OK."""
+        room_name = 'ROOM NAME'
+        self.hcn.add_room(room_name)
+        self.mock_redis_storage.is_locked_for_domain_and_key.return_value = False
+        self.mock_redis_storage.is_recovery_pending_for_domain_and_key.\
+            return_value = True
+
+        self.hcn.notify(
+            self.mock_alert,
+            self.alert_key,
+            Level.NOMINAL,
+            self.description)
+
+        self.mock_hipchat_client.message_room.assert_called_once_with(
+            room_name,
+            'Graphite-Pager',
+            self.description.html(),
+            message_format='html',
+            color='green',
+        )
+        self.mock_redis_storage.remove_lock_for_domain_and_key.\
+            assert_called_once_with('HipChat', self.alert_key)
+        self.mock_redis_storage.clear_recovery_pending_for_domain_and_key.\
+            assert_called_once_with('HipChat', self.alert_key)
 
     def test_should_notify_room_of_warning_if_had_not_notified_before(self):
         room_name = 'ROOM NAME'
@@ -99,6 +131,8 @@ class TestHipChatNotifier(TestCase):
             color='yellow'
         )
         self.mock_redis_storage.set_lock_for_domain_and_key.\
+            assert_called_once_with('HipChat', self.alert_key)
+        self.mock_redis_storage.set_recovery_pending_for_domain_and_key.\
             assert_called_once_with('HipChat', self.alert_key)
 
     def test_should_notify_room_of_critical_if_had_not_notified_before(self):
@@ -122,12 +156,16 @@ class TestHipChatNotifier(TestCase):
         )
         self.mock_redis_storage.set_lock_for_domain_and_key.\
             assert_called_once_with('HipChat', self.alert_key)
+        self.mock_redis_storage.set_recovery_pending_for_domain_and_key.\
+            assert_called_once_with('HipChat', self.alert_key)
 
     def test_should_notify_room_of_no_data_if_had_not_notified_before(self):
         room_name = 'ROOM NAME'
         self.hcn.add_room(room_name)
         self.mock_redis_storage.is_locked_for_domain_and_key.\
             return_value = False
+        self.mock_redis_storage.increment_no_data_count_for_alert.\
+            return_value = 4
 
         self.hcn.notify(
             self.mock_alert,
@@ -140,7 +178,5 @@ class TestHipChatNotifier(TestCase):
             'Graphite-Pager',
             self.description.html(),
             message_format='html',
-            color='red'
+            color='purple'
         )
-        self.mock_redis_storage.set_lock_for_domain_and_key.\
-            assert_called_once_with('HipChat', self.alert_key)
