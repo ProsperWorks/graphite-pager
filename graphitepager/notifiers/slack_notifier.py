@@ -76,18 +76,20 @@ class SlackNotifier(BaseNotifier):
 
         try:
             url = self._get_service_url(alert, level)
-            response = requests.post(url, data=values).content
+            resp = requests.post(url, data=values)
+            body = (resp.text or '').strip()
         except Exception as e:
             print('--> Unable to send message to slack: "{0}"'.format(
                 e
             ))
             return False
 
-        if response == 'ok':
+        if resp.ok and body == 'ok':
             return True
 
-        print('--> Unable to send message to slack: "{0}"'.format(
-            message
+        print('--> Unable to send message to slack: HTTP {0} {1!r}'.format(
+            resp.status_code,
+            body or resp.content,
         ))
         return False
 

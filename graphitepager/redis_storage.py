@@ -27,7 +27,7 @@ class RedisStorage(object):
     def set_lock_for_domain_and_key(self, domain, key):
         key = 'LOCK-{0}-{1}'.format(domain, key)
         exp = int(self._config.get('NOTIFICATION_EXPIRATION_SECONDS',300))
-        self._client.set(key, True)
+        self._client.set(key, 1)
         self._client.expire(key, exp)
 
     def remove_lock_for_domain_and_key(self, domain, key):
